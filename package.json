@@ -1,0 +1,38 @@
+{
+  "name": "cws-swap",
+  "version": "1.0.0",
+  "description": "A simple page to show swapping CWS-ETH in uniswap after web3modal",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blocklords/cws-swap.git"
+  },
+  "keywords": [
+    "uniswap",
+    "seascape",
+    "blocklords",
+    "web3modal",
+    "cws",
+    "crowns",
+    "ahmetson"
+  ],
+  "author": "Medet Ahmetson <admin@blocklords.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blocklords/cws-swap/issues"
+  },
+  "homepage": "https://github.com/blocklords/cws-swap#readme",
+  "dependencies": {
+    "@ethersproject/address": "^5.0.8",
+    "@ethersproject/contracts": "^5.0.8",
+    "@ethersproject/networks": "^5.0.6",
+    "@ethersproject/providers": "^5.0.17",
+    "@ethersproject/solidity": "^5.0.7",
+    "@uniswap/sdk": "^3.0.3",
+    "express": "^4.17.1",
+    "https-localhost": "^4.6.3"
+  }
+}
