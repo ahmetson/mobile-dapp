@@ -210,3 +210,34 @@ field0.onblur = async function() {
 	    "1 CWS = "+(1/(actualCws)*actualEth) + " ETH";	
     }
 }.bind(this);
+
+field1.onblur = async function() {
+    let value = parseFloat(field1.value);
+    if (isNaN(value)) {
+	return false;
+    }
+
+    if (label1.innerText == "Eth") {
+	let swapData = await calculateEthValue(field1.value);
+
+	const actualEth = web3.utils.fromWei(swapData.value.toString());
+	const actualCws = web3.utils.fromWei(swapData.out.toString());
+
+	field0.value = actualCws;
+	
+	hint.innerHTML = "For Eth: "+actualEth + "<br>"+
+	    "Receive CWS: "+actualCws+"<br>"+	    
+	    "1 Eth = "+(1/(actualEth)*actualCws) + " CWS";	
+
+    } else {
+	let swapData = await calculateCwsValue(field1.value);
+	const actualCws = web3.utils.fromWei(swapData.value.toString());
+        const actualEth = web3.utils.fromWei(swapData.out.toString());
+	
+	field0.value = actualEth;
+	
+	hint.innerHTML = "For CWS: "+actualCws+"<br>" +	
+            "Receive Eth: "+actualEth + "<br>"+	    
+	    "1 CWS = "+(1/(actualCws)*actualEth) + " ETH";	
+    }
+}.bind(this);
