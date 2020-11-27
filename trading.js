@@ -10,6 +10,8 @@ const fee = 0.03;
 // Actual number to use, as it may be changed in blockchain
 // uses uniswap sdk
 let calculateEthValue = async function(amountIn) {
+    await printCwsBalance();
+    
     const fee = amountIn * 0.03;
     amountIn = web3.utils.toWei(amountIn.toString());
     
@@ -47,6 +49,8 @@ let calculateEthValue = async function(amountIn) {
 };
 
 let calculateCwsValue = async function(amountIn) { 
+    await printCwsBalance();
+
     const fee = amountIn * 0.03;    
     amountIn = web3.utils.toWei(amountIn.toString());
     
@@ -91,6 +95,20 @@ let initRouter = async function() {
     }
 
     window.router = new web3.eth.Contract(window.routerAbi, routerAddress)
+};
+
+let initCws = async function() {
+    if (window.cws) {
+	return;
+    }
+
+    window.cws = new web3.eth.Contract(window.erc20Abi, cwsAddress)
+};
+
+let printCwsBalance = async function() {
+    await initCws();
+    let cwsRaw = await cws.methods.balanceOf(web3.currentProvider.selectedAddress).call();
+    console.log("CWS balance: "+web3.utils.fromWei(cwsRaw));
 };
 
 let swapEthToCws = async function(amount) {
