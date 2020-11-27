@@ -4,9 +4,13 @@ const CWS = new UNISWAP.Token(UNISWAP.ChainId.RINKEBY, cwsAddress, 18);
 // get router address from https://uniswap.org/docs/v2/smart-contracts/router02/
 const routerAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 
+// Uniswap trading fee: 3%
+const fee = 0.03;
+
 // Actual number to use, as it may be changed in blockchain
 // uses uniswap sdk
 let calculateEthValue = async function(amountIn) {
+    const fee = amountIn * 0.03;
     amountIn = web3.utils.toWei(amountIn.toString());
     
     // note that you may want/need to handle this async code differently,
@@ -18,22 +22,32 @@ let calculateEthValue = async function(amountIn) {
     const trade = new UNISWAP.Trade(route, new UNISWAP.TokenAmount(UNISWAP.WETH[CWS.chainId], amountIn), UNISWAP.TradeType.EXACT_INPUT);
 
     const slippageTolerance = new UNISWAP.Percent('50', '10000') // 50 bips, or 0.50%
-
+    
     const amountOutMin = trade.minimumAmountOut(slippageTolerance).raw // needs to be converted to e.g. hex
+    const amountOut = trade.outputAmount.raw // needs to be converted to e.g. hex
     const path = [UNISWAP.WETH[CWS.chainId].address, CWS.address]
     const to = '' // should be a checksummed recipient address
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20 // 20 minutes from the current Unix time
     const value = trade.inputAmount.raw // // needs to be converted to e.g. hex
+    const priceImpact = trade.priceImpact.toSignificant(6);
+
 
     const actualEth = web3.utils.fromWei(value.toString());
-    const actualCws = web3.utils.fromWei(amountOutMin.toString());
+    const actualCws = web3.utils.fromWei(amountOut.toString());
+    const actualMin = web3.utils.fromWei(amountOutMin.toString());
+
     console.log("For Eth: "+actualEth);
     console.log("Receive CWS: "+actualCws);
     console.log("1 Eth = "+(1/(actualEth)*actualCws) + " CWS");
-    return {out: amountOutMin, value: value, path: path, deadline: deadline};
+    console.log()
+    console.log("Minimum received: "+actualMin);
+    console.log("Price Impact: "+priceImpact);
+    console.log("Fee: "+fee+" ETH");
+    return {out: amountOut, min: amountOutMin, value: value, path: path, deadline: deadline};
 };
 
-let calculateCwsValue = async function(amountIn) {
+let calculateCwsValue = async function(amountIn) { 
+    const fee = amountIn * 0.03;    
     amountIn = web3.utils.toWei(amountIn.toString());
     
     // note that you may want/need to handle this async code differently,
@@ -48,18 +62,27 @@ let calculateCwsValue = async function(amountIn) {
     const slippageTolerance = new UNISWAP.Percent('50', '10000') // 50 bips, or 0.50%
 
     const amountOutMin = trade.minimumAmountOut(slippageTolerance).raw // needs to be converted to e.g. hex
+    const amountOut = trade.outputAmount.raw // needs to be converted to e.g. hex
     const path = [CWS.address, UNISWAP.WETH[CWS.chainId].address]
     const to = '' // should be a checksummed recipient address
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20 // 20 minutes from the current Unix time
     const value = trade.inputAmount.raw // // needs to be converted to e.g. hex
+    const priceImpact = trade.priceImpact.toSignificant(6);
 
+    
     const actualCws = web3.utils.fromWei(value.toString());
-    const actualEth = web3.utils.fromWei(amountOutMin.toString());
+    const actualEth = web3.utils.fromWei(amountOut.toString());
+    const actualMin = web3.utils.fromWei(amountOutMin.toString());
+    
     console.log("For CWS: "+actualCws);
     console.log("Receive Eth: "+actualEth);
     console.log("1 CWS = "+(1/(actualCws)*actualEth) + " ETH");
+    console.log()
+    console.log("Minimum received: "+actualMin);
+    console.log("Price Impact: "+priceImpact);
+    console.log("Fee: "+fee+" ETH");
     
-    return {out: amountOutMin, value: value, path: path, deadline: deadline};
+    return {out: amountOut, min: amountOutMin, value: value, path: path, deadline: deadline};
 };
 
 let initRouter = async function() {
