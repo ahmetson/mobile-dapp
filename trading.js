@@ -173,9 +173,9 @@ reverse.onclick = function() {
 swap.onclick = function() {
     // player swaps his eth to crowns
     if (label0.innerText == "Eth") {
-	swapsEthToCws(field0.value);
+	swapEthToCws(field0.value);
     } else {
-	swapsCwsToEth(field0.value);
+	swapCwsToEth(field0.value);
     }
 }
 
