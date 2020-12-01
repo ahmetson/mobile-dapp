@@ -1,4 +1,0 @@
-var UNISWAP = require('@uniswap/sdk');
-
-console.log(UNISWAP.ChainId.RINKEBY);
-
