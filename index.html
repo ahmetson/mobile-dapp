@@ -101,6 +101,40 @@
 	  </div>	  
 	</div>	
       </div>      
+
+
+      <div class="row">	
+        <div class="col-md-12">
+          <h1>Swap DAI-CWS</h1>
+
+          <p>Only, after wallet connection.<br>Swaps DAI automatically to WETH, then WETH to CWS...</p>
+	</div>
+      </div>
+      <div class="row">
+	<div class="col-md-6">
+	  <label id="dai-label-0">DAI</label>
+	</div>
+	<div class="col-md-6">
+	  <input id="dai-field-0" name="eth" /><button id="dai-reverse" >reverse</button>
+	</div>
+      </div>
+      <div class="row">	
+	<div class="col-md-6">
+	  <label id="dai-label-1">CWS</label>
+	</div>
+	<div class="col-md-6">
+	  <input id="dai-field-1" name="cws" />
+	</div>
+      </div>
+      <div class="row">
+	<div class="col-md-12">
+	  <button id="dai-swap">SWAP</button>
+	  <div class="well" id="dai-hint">
+	  </div>	  
+	</div>	
+      </div>      
+
+
     </div>
 
     <!-- We use simple <template> templating for the example -->
@@ -141,5 +175,6 @@
 
     <!-- This is a sample script to swap data -->
     <script type="text/javascript" src="./trading.js"></script>
+    <script type="text/javascript" src="./dai_trading.js"></script>    
   </body>
 </html>
