@@ -98,13 +98,44 @@ let initDai = async function() {
     window.dai = new web3.eth.Contract(window.erc20Abi, daiAddress)
 };
 
+// approve to use {token} of "userAccount" by another account {approvee}
+let approvePermission = async function(userAccount, approvee, token) {
+    // approvement is once time only. if allowed the token usage,
+    // then no need to grant permission again.
+    let balance = await token.methods.allowance(userAccount, approvee).call();
+    balance = parseInt(web3.utils.fromWei(balance));
+
+    if (balance > 0) {
+	return;
+    }
+
+    // 10 billion in Wei format
+    // granting big number, to ensure, that player will not reach it very soon.
+    let ten_billion_wei = "10000000000000000000000000000";
+    await token.methods.approve(approvee, ten_billion_wei)
+	.send({from: userAccount})
+    	    .on('transactionHash', function(hash){
+		alert("Please wait approvement confirmation...");
+	    }.bind(this))
+	    .on('receipt', function(receipt){
+		alert(web3.utils.fromWei(ten_billion_wei+" TOKEN were approved to "+approvee));
+	    }.bind(this))
+	    .on('error', function(err){
+		alert(err);
+		console.error(err);
+	    }.bind(this));
+};
+
 let swapDaiToCws = async function(amount) {
     let swapData = await calculateDaiValue(amount);
     await initRouter();
 
     let account = web3.currentProvider.selectedAddress;
-    window.router.methods.swapExactTokensForTokens(swapData.out.toString(), swapData.path, account, swapData.deadline)
-	.send({from: account, value: swapData.value.toString()})
+    
+    await initDai();
+    
+    await approvePermission(account, routerAddress, dai);
+    
     window.router.methods.swapExactTokensForTokens(swapData.value.toString(), swapData.min.toString(), swapData.path, account, swapData.deadline)
 	.send({from: account})
 	    .on('transactionHash', function(hash){
