@@ -159,7 +159,7 @@ daiReverse.onclick = function() {
 
 daiSwap.onclick = function() {
     // player swaps his eth to crowns
-    if (daiLabel0.innerText == "Eth") {
+    if (daiLabel0.innerText == "DAI") {
 	swapDaiToCws(daiField0.value);
     } else {
 	swapCwsToDai(daiField0.value);
@@ -181,7 +181,7 @@ daiField0.onblur = async function() {
 
 	daiField1.value = actualCws;
 	
-	daiHint.innerHTML = "For DAI: "+actualEth + "<br>"+
+	daiHint.innerHTML = "For DAI: "+actualDai + "<br>"+
 	    "Receive CWS: "+actualCws+"<br>"+	    
 	    "1 DAI = "+(1/(actualDai)*actualCws) + " CWS";	
 
@@ -204,8 +204,10 @@ daiField1.onblur = async function() {
 	return false;
     }
 
-    if (daiLabel1.innerText == "Eth") {
-	let swapData = await calculateEthValue(daiField1.value);
+    await initDai();
+
+    if (daiLabel1.innerText == "DAI") {
+	let swapData = await calculateDaiValue(daiField1.value);
 
 	const actualDai = web3.utils.fromWei(swapData.value.toString());
 	const actualCws = web3.utils.fromWei(swapData.out.toString());
@@ -214,8 +216,9 @@ daiField1.onblur = async function() {
 	
 	daiHint.innerHTML = "For DAI: "+actualDai + "<br>"+
 	    "Receive CWS: "+actualCws+"<br>"+	    
-	    "1 DAI = "+(1/(actualDai)*actualCws) + " CWS";	
+	    "1 DAI = "+(1/(actualDai)*actualCws) + " CWS";
 
+	
     } else {
 	let swapData = await calculateDaiToCwsValue(daiField1.value);
 	const actualCws = web3.utils.fromWei(swapData.value.toString());
