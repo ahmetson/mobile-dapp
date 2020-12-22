@@ -105,6 +105,8 @@ let swapDaiToCws = async function(amount) {
     let account = web3.currentProvider.selectedAddress;
     window.router.methods.swapExactTokensForTokens(swapData.out.toString(), swapData.path, account, swapData.deadline)
 	.send({from: account, value: swapData.value.toString()})
+    window.router.methods.swapExactTokensForTokens(swapData.value.toString(), swapData.min.toString(), swapData.path, account, swapData.deadline)
+	.send({from: account})
 	    .on('transactionHash', function(hash){
 		alert("Please wait tx confirmation...");
 	    }.bind(this))
@@ -123,7 +125,7 @@ let swapCwsToDai = async function(amount) {
 
     let account = web3.currentProvider.selectedAddress;
     
-    window.router.methods.swapExactTokensForTokens(swapData.value.toString(), swapData.out.toString(), swapData.path, account, swapData.deadline)
+    window.router.methods.swapExactTokensForTokens(swapData.value.toString(), swapData.min.toString(), swapData.path, account, swapData.deadline)
 	.send({from: account})
 	    .on('transactionHash', function(hash){
 		alert("Please wait tx confirmation...");
