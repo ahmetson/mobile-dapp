@@ -9,6 +9,7 @@ const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const Fortmatic = window.Fortmatic;
 const evmChains = window.evmChains;
+const Web3 = require("web3");
 
 // Web3modal instance
 let web3Modal
@@ -168,12 +169,13 @@ async function onConnect() {
   // true for mobile device
   alert("mobile device");
 
-  const provider = await detectEthereumProvider();
-
-  if (provider) {
-    startApp(provider); // initialize your app
-  } else {
-    console.log('Please install MetaMask!');
+  const ethEnabled = () => {
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum);
+      window.ethereum.enable();
+      return true;
+    }
+    return false;
   }
 }else{
   // false for not mobile device
