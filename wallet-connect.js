@@ -167,7 +167,7 @@ async function onConnect() {
 
   if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
   // true for mobile device
-  console.log("mobile device");
+  alert("mobile device");
 
   const provider = await detectEthereumProvider();
 
@@ -178,7 +178,7 @@ async function onConnect() {
   }
 }else{
   // false for not mobile device
-  console.log("not mobile device");
+  alert("not mobile device");
 
   console.log("Opening a dialog", web3Modal);
   try {
