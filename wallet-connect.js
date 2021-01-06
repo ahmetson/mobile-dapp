@@ -26,6 +26,11 @@ let selectedAccount;
  */
 function init() {
 
+
+
+
+
+
   console.log("Initializing example");
   console.log("WalletConnectProvider is", WalletConnectProvider);
   console.log("Fortmatic is", Fortmatic);
@@ -159,6 +164,13 @@ async function refreshAccountData() {
  */
 async function onConnect() {
 
+  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+  // true for mobile device
+  console.log("mobile device");
+}else{
+  // false for not mobile device
+  console.log("not mobile device");
+
   console.log("Opening a dialog", web3Modal);
   try {
     provider = await web3Modal.connect();
@@ -166,6 +178,9 @@ async function onConnect() {
     console.log("Could not get a wallet connection", e);
     return;
   }
+}
+
+
 
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
