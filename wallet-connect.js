@@ -9,7 +9,6 @@ const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const Fortmatic = window.Fortmatic;
 const evmChains = window.evmChains;
-import detectEthereumProvider from '@metamask/detect-provider';
 
 // Web3modal instance
 let web3Modal
