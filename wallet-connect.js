@@ -9,6 +9,7 @@ const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const Fortmatic = window.Fortmatic;
 const evmChains = window.evmChains;
+import detectEthereumProvider from '@metamask/detect-provider';
 
 // Web3modal instance
 let web3Modal
@@ -167,6 +168,14 @@ async function onConnect() {
   if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
   // true for mobile device
   console.log("mobile device");
+
+  const provider = await detectEthereumProvider();
+
+  if (provider) {
+    startApp(provider); // initialize your app
+  } else {
+    console.log('Please install MetaMask!');
+  }
 }else{
   // false for not mobile device
   console.log("not mobile device");
