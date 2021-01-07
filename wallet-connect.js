@@ -176,7 +176,7 @@ async function onConnect() {
     alert('MetaMask is installed!');
     //TODO: setup metamask provider
     try{
-      const provider = await createMetaMaskProvider();
+      provider = await createMetaMaskProvider();
     }catch(e){
       console.log("Couldn't connect to MetaMask.");
     }
