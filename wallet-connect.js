@@ -9,6 +9,8 @@ const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const Fortmatic = window.Fortmatic;
 const evmChains = window.evmChains;
+const createMetaMaskProvider = require('metamask-extension-provider');
+
 
 // Web3modal instance
 let web3Modal
@@ -20,6 +22,8 @@ let provider;
 // Address of the selected account
 let selectedAccount;
 
+// detects if connected through mobile browser
+let mobileBrowser
 
 /**
  * Setup the orchestra
@@ -164,35 +168,35 @@ async function refreshAccountData() {
  */
 async function onConnect() {
 
-  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-  // true for mobile device
-  //alert("mobile device");
-    if (typeof window.ethereum !== 'undefined') {
-      alert('MetaMask is installed!');
-    }
-    else{
-      alert('MetaMask not detected!');
-    }
-  }else{
+  //detect user agent
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? mobileBrowser = true : mobileBrowser = false;
 
-  // false for not mobile device
-  //alert("not mobile device");
+  //detect metamask
   if (typeof window.ethereum !== 'undefined') {
     alert('MetaMask is installed!');
-  }
-  else{
-    alert('MetaMask not detected!');
+    //TODO: setup metamask provider
+    const provider = createMetaMaskProvider();
+    provider.on('error', (error) => {
+      console.log("Couldn't connect to MetaMask.");
+    });
 
-  console.log("Opening a dialog", web3Modal);
-  try {
-    provider = await web3Modal.connect();
-  } catch(e) {
-    console.log("Could not get a wallet connection", e);
-    return;
-  }
-  }
-}
+  //if not using MetaMask
+  }else{
+    if(mobileBrowser){
+      alert('Currently only MetaMask is supported.');
+      //setup another mobile provider ??
 
+    }else{
+      //open popup
+      console.log("Opening a dialog", web3Modal);
+      try {
+        provider = await web3Modal.connect();
+      } catch(e) {
+        console.log("Could not get a wallet connection", e);
+        return;
+      }
+    }
+  }
 
 
   // Subscribe to accounts change
