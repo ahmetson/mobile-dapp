@@ -200,22 +200,22 @@ async function onConnect() {
   }
 
 
-  // Subscribe to accounts change
-  provider.on("accountsChanged", (accounts) => {
-    fetchAccountData();
-  });
-
-  // Subscribe to chainId change
-  provider.on("chainChanged", (chainId) => {
-    fetchAccountData();
-  });
-
-  // Subscribe to networkId change
-  provider.on("networkChanged", (networkId) => {
-    fetchAccountData();
-  });
-
-  await refreshAccountData();
+  // // Subscribe to accounts change
+  // provider.on("accountsChanged", (accounts) => {
+  //   fetchAccountData();
+  // });
+  //
+  // // Subscribe to chainId change
+  // provider.on("chainChanged", (chainId) => {
+  //   fetchAccountData();
+  // });
+  //
+  // // Subscribe to networkId change
+  // provider.on("networkChanged", (networkId) => {
+  //   fetchAccountData();
+  // });
+  //
+  // await refreshAccountData();
 }
 
 /**
