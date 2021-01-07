@@ -9,7 +9,6 @@ const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const Fortmatic = window.Fortmatic;
 const evmChains = window.evmChains;
-const Web3 = require("web3");
 
 // Web3modal instance
 let web3Modal
@@ -167,17 +166,11 @@ async function onConnect() {
 
   if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
   // true for mobile device
-  alert("mobile device");
-
-  const ethEnabled = () => {
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum);
-      window.ethereum.enable();
-      return true;
+  //alert("mobile device");
+    if (typeof window.ethereum !== 'undefined') {
+      alert('MetaMask is installed!');
     }
-    return false;
-  }
-}else{
+  }else{
   // false for not mobile device
   alert("not mobile device");
 
