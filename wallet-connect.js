@@ -166,6 +166,7 @@ async function refreshAccountData() {
  */
 async function onConnect() {
 
+  console.log("onConnect");
   // detects if connected through mobile browser
   let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -181,7 +182,7 @@ async function onConnect() {
   setTimeout(handleEthereum, 3000); // 3 seconds
   }
 
-
+    console.log("events are called looking for provider.");
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
     fetchAccountData();
@@ -203,35 +204,35 @@ async function onConnect() {
 
   //Handle the connection
   async function handleEthereum() {
-  const { ethereum } = window;
-  //if metamask is connected
-  if (ethereum && ethereum.isMetaMask) {
-    console.log('Ethereum successfully detected!');
 
-    //get user accounts and store them
-    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-    const account = accounts[0];
-    accountContainer.innerHTML = account;
-  }
-  //if metamask is not connected but agent is not mobile
-  else if(!mobileBrowser){
-    //open web3Modal popup
-    console.log("Opening a dialog", web3Modal);
-    try {
-      provider = await web3Modal.connect();
-    } catch(e) {
-        console.log("Could not get a wallet connection", e);
-        return;
+  console.log("handleEthereum was called");
+    const { ethereum } = window;
+    //if metamask is connected
+    if (ethereum && ethereum.isMetaMask) {
+      console.log('Ethereum successfully detected!');
+
+      //get user accounts and store them
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      const account = accounts[0];
+      accountContainer.innerHTML = account;
     }
-  }
-  //if agent is mobile, only metamask is supported currently
-  else {
-      alert('Please install MetaMask!');
+    //if metamask is not connected but agent is not mobile
+    else if(!mobileBrowser){
+      //open web3Modal popup
+      console.log("Opening a dialog", web3Modal);
+      try {
+        console.log("provider was set.");
+        provider = await web3Modal.connect();
+      } catch(e) {
+          console.log("Could not get a wallet connection", e);
+          return;
+      }
     }
+    //if agent is mobile, only metamask is supported currently
+    else {
+        alert('Please install MetaMask!');
+      }
   }
-
-
-
 
 
 
