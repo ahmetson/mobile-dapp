@@ -176,7 +176,7 @@ async function onConnect() {
   }else{
 
   // false for not mobile device
-  alert("not mobile device");
+  //alert("not mobile device");
   if (typeof window.ethereum !== 'undefined') {
     alert('MetaMask is installed!');
   }
