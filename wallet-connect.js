@@ -185,14 +185,14 @@ async function onConnect() {
   }
 
   //Handle the connection
-  async function handleEthereum() {
+  function handleEthereum() {
   const { ethereum } = window;
   //if metamask is connected
   if (ethereum && ethereum.isMetaMask) {
     console.log('Ethereum successfully detected!');
 
     //get user accounts and store them
-    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+    const accounts = ethereum.request({ method: 'eth_requestAccounts' });
     const account = accounts[0];
     accountContainer.innerHTML = account;
   }
