@@ -166,10 +166,8 @@ async function refreshAccountData() {
  */
 async function onConnect() {
 
-
   // detects if connected through mobile browser
   let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
 
   //reliably detect both the mobile and extension Metamask provider
   if (window.ethereum) {
@@ -178,21 +176,40 @@ async function onConnect() {
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
   });
-
   // If the event is not dispatched by the end of the timeout,
   // the user probably doesn't have MetaMask installed.
   setTimeout(handleEthereum, 3000); // 3 seconds
   }
 
+
+  // Subscribe to accounts change
+  provider.on("accountsChanged", (accounts) => {
+    fetchAccountData();
+  });
+
+  // Subscribe to chainId change
+  provider.on("chainChanged", (chainId) => {
+    fetchAccountData();
+  });
+
+  // Subscribe to networkId change
+  provider.on("networkChanged", (networkId) => {
+    fetchAccountData();
+  });
+
+  await refreshAccountData();
+}
+
+
   //Handle the connection
-  function handleEthereum() {
+  async function handleEthereum() {
   const { ethereum } = window;
   //if metamask is connected
   if (ethereum && ethereum.isMetaMask) {
     console.log('Ethereum successfully detected!');
 
     //get user accounts and store them
-    const accounts = ethereum.request({ method: 'eth_requestAccounts' });
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
     const account = accounts[0];
     accountContainer.innerHTML = account;
   }
@@ -219,25 +236,7 @@ async function onConnect() {
 
 
 
-  // Subscribe to accounts change
-  provider.on("accountsChanged", (accounts) => {
-    fetchAccountData();
-  });
 
-  // Subscribe to chainId change
-  provider.on("chainChanged", (chainId) => {
-    fetchAccountData();
-  });
-
-  // Subscribe to networkId change
-  provider.on("networkChanged", (networkId) => {
-    fetchAccountData();
-  });
-
-  await refreshAccountData();
-
-
-}
 
 /**
  * Disconnect wallet button pressed.
