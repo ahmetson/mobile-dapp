@@ -170,9 +170,18 @@ async function onConnect() {
     if (typeof window.ethereum !== 'undefined') {
       alert('MetaMask is installed!');
     }
+    else{
+      alert('MetaMask not detected!');
+    }
   }else{
+
   // false for not mobile device
   alert("not mobile device");
+  if (typeof window.ethereum !== 'undefined') {
+    alert('MetaMask is installed!');
+  }
+  else{
+    alert('MetaMask not detected!');
 
   console.log("Opening a dialog", web3Modal);
   try {
@@ -180,6 +189,7 @@ async function onConnect() {
   } catch(e) {
     console.log("Could not get a wallet connection", e);
     return;
+  }
   }
 }
 
