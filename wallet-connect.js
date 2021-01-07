@@ -185,7 +185,7 @@ async function onConnect() {
   }
 
   //Handle the connection
-  function handleEthereum() {
+  async function handleEthereum() {
   const { ethereum } = window;
   //if metamask is connected
   if (ethereum && ethereum.isMetaMask) {
