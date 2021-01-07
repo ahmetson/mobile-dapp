@@ -168,38 +168,34 @@ async function refreshAccountData() {
  */
 async function onConnect() {
 
-  //detect user agent
-  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? mobileBrowser = true : mobileBrowser = false;
-
-  //detect metamask
-  if (typeof window.ethereum !== 'undefined') {
-    alert('MetaMask is installed!');
-    //TODO: setup metamask provider
-    try{
-      provider = await createMetaMaskProvider();
-    }catch(e){
-      console.log("Couldn't connect to MetaMask.");
-    }
-
-  //if not using MetaMask
-  }else{
-    if(mobileBrowser){
-      alert('Currently only MetaMask is supported.');
-      //setup another mobile provider ??
-
-    }else{
-      //open popup
-      console.log("Opening a dialog", web3Modal);
-      try {
-        provider = await web3Modal.connect();
-      } catch(e) {
-        console.log("Could not get a wallet connection", e);
-        return;
-      }
-    }
-  }
-
-
+  // //detect user agent
+  // /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? mobileBrowser = true : mobileBrowser = false;
+  //
+  // //if using metamask
+  // if (typeof window.ethereum !== 'undefined') {
+  //   alert('MetaMask is installed!');
+  //   //TODO: setup metamask provider
+  //
+  //
+  // //if not using MetaMask
+  // }else{
+  //   if(mobileBrowser){
+  //     alert('Currently only MetaMask is supported.');
+  //     //setup another mobile provider ??
+  //
+  //   }else{
+  //     //open popup
+  //     console.log("Opening a dialog", web3Modal);
+  //     try {
+  //       provider = await web3Modal.connect();
+  //     } catch(e) {
+  //       console.log("Could not get a wallet connection", e);
+  //       return;
+  //     }
+  //   }
+  // }
+  //
+  //
   // // Subscribe to accounts change
   // provider.on("accountsChanged", (accounts) => {
   //   fetchAccountData();
@@ -216,6 +212,27 @@ async function onConnect() {
   // });
   //
   // await refreshAccountData();
+  if (window.ethereum) {
+  handleEthereum();
+} else {
+  window.addEventListener('ethereum#initialized', handleEthereum, {
+    once: true,
+  });
+
+  // If the event is not dispatched by the end of the timeout,
+  // the user probably doesn't have MetaMask installed.
+  setTimeout(handleEthereum, 3000); // 3 seconds
+}
+
+function handleEthereum() {
+  const { ethereum } = window;
+  if (ethereum && ethereum.isMetaMask) {
+    console.log('Ethereum successfully detected!');
+    // Access the decentralized web!
+  } else {
+    console.log('Please install MetaMask!');
+  }
+}
 }
 
 /**
