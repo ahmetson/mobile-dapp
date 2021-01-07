@@ -21,8 +21,7 @@ let provider;
 // Address of the selected account
 let selectedAccount;
 
-// detects if connected through mobile browser
-let mobileBrowser
+
 
 /**
  * Setup the orchestra
@@ -167,71 +166,77 @@ async function refreshAccountData() {
  */
 async function onConnect() {
 
-  // //detect user agent
-  // /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? mobileBrowser = true : mobileBrowser = false;
-  //
-  // //if using metamask
-  // if (typeof window.ethereum !== 'undefined') {
-  //   alert('MetaMask is installed!');
-  //   //TODO: setup metamask provider
-  //
-  //
-  // //if not using MetaMask
-  // }else{
-  //   if(mobileBrowser){
-  //     alert('Currently only MetaMask is supported.');
-  //     //setup another mobile provider ??
-  //
-  //   }else{
-  //     //open popup
-  //     console.log("Opening a dialog", web3Modal);
-  //     try {
-  //       provider = await web3Modal.connect();
-  //     } catch(e) {
-  //       console.log("Could not get a wallet connection", e);
-  //       return;
-  //     }
-  //   }
-  // }
-  //
-  //
-  // // Subscribe to accounts change
-  // provider.on("accountsChanged", (accounts) => {
-  //   fetchAccountData();
-  // });
-  //
-  // // Subscribe to chainId change
-  // provider.on("chainChanged", (chainId) => {
-  //   fetchAccountData();
-  // });
-  //
-  // // Subscribe to networkId change
-  // provider.on("networkChanged", (networkId) => {
-  //   fetchAccountData();
-  // });
-  //
-  // await refreshAccountData();
+
+  // detects if connected through mobile browser
+  let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+
+  //reliably detect both the mobile and extension Metamask provider
   if (window.ethereum) {
-  handleEthereum();
-} else {
-  window.addEventListener('ethereum#initialized', handleEthereum, {
-    once: true,
+    handleEthereum();
+  } else {
+    window.addEventListener('ethereum#initialized', handleEthereum, {
+      once: true,
   });
 
   // If the event is not dispatched by the end of the timeout,
   // the user probably doesn't have MetaMask installed.
   setTimeout(handleEthereum, 3000); // 3 seconds
-}
+  }
 
-function handleEthereum() {
+  //Handle the connection
+  function handleEthereum() {
   const { ethereum } = window;
+  //if metamask is connected
   if (ethereum && ethereum.isMetaMask) {
     console.log('Ethereum successfully detected!');
-    // Access the decentralized web!
-  } else {
-    console.log('Please install MetaMask!');
+
+    //get user accounts and store them
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+    const account = accounts[0];
+    accountContainer.innerHTML = account;
   }
-}
+  //if metamask is not connected but agent is not mobile
+  else if(!mobileBrowser){
+    //open web3Modal popup
+    console.log("Opening a dialog", web3Modal);
+    try {
+      provider = await web3Modal.connect();
+    } catch(e) {
+        console.log("Could not get a wallet connection", e);
+        return;
+    }
+  }
+  //if agent is mobile, only metamask is supported currently
+  else {
+      alert('Please install MetaMask!');
+    }
+  }
+
+
+
+
+
+
+
+  // Subscribe to accounts change
+  provider.on("accountsChanged", (accounts) => {
+    fetchAccountData();
+  });
+
+  // Subscribe to chainId change
+  provider.on("chainChanged", (chainId) => {
+    fetchAccountData();
+  });
+
+  // Subscribe to networkId change
+  provider.on("networkChanged", (networkId) => {
+    fetchAccountData();
+  });
+
+  await refreshAccountData();
+
+
 }
 
 /**

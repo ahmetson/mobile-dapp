@@ -71,7 +71,7 @@
 
         </div>
       </div>
-      <div class="row">	
+      <div class="row">
         <div class="col-md-12">
           <h1>Swap ETH-CWS</h1>
 
@@ -86,7 +86,7 @@
 	  <input id="field-0" name="eth" /><button id="reverse" >reverse</button>
 	</div>
       </div>
-      <div class="row">	
+      <div class="row">
 	<div class="col-md-6">
 	  <label id="label-1">CWS</label>
 	</div>
@@ -98,12 +98,12 @@
 	<div class="col-md-12">
 	  <button id="swap">SWAP</button>
 	  <div class="well" id="hint">
-	  </div>	  
-	</div>	
-      </div>      
+	  </div>
+	</div>
+      </div>
 
 
-      <div class="row">	
+      <div class="row">
         <div class="col-md-12">
           <h1>Swap DAI-CWS</h1>
 
@@ -118,7 +118,7 @@
 	  <input id="dai-field-0" name="eth" /><button id="dai-reverse" >reverse</button>
 	</div>
       </div>
-      <div class="row">	
+      <div class="row">
 	<div class="col-md-6">
 	  <label id="dai-label-1">CWS</label>
 	</div>
@@ -130,9 +130,9 @@
 	<div class="col-md-12">
 	  <button id="dai-swap">SWAP</button>
 	  <div class="well" id="dai-hint">
-	  </div>	  
-	</div>	
-      </div>      
+	  </div>
+	</div>
+      </div>
 
 
     </div>
@@ -164,17 +164,27 @@
     <script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/web3@1.3.0/dist/web3.min.js"></script>
-    
+    <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
+    <script type="text/javascript">
+      const provider = await detectEthereumProvider()
+
+      if (provider) {
+        // handle provider
+      } else {
+        // handle no provider
+      }
+    </script>
+
     <!-- uniswap-sdk to test swaping -->
     <script type="text/javascript" src="uniswap-sdk.bundle.js"></script>
     <script type="text/javascript" src="router-abi.js"></script>
-    <script type="text/javascript" src="erc20-abi.js"></script>    
-    
+    <script type="text/javascript" src="erc20-abi.js"></script>
+
     <!-- This is our example code -->
     <script type="text/javascript" src="./wallet-connect.js"></script>
 
     <!-- This is a sample script to swap data -->
     <script type="text/javascript" src="./trading.js"></script>
-    <script type="text/javascript" src="./dai_trading.js"></script>    
+    <script type="text/javascript" src="./dai_trading.js"></script>
   </body>
 </html>
