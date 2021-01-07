@@ -175,10 +175,11 @@ async function onConnect() {
   if (typeof window.ethereum !== 'undefined') {
     alert('MetaMask is installed!');
     //TODO: setup metamask provider
-    const provider = createMetaMaskProvider();
-    provider.on('error', (error) => {
+    try{
+      const provider = await createMetaMaskProvider();
+    }catch(e){
       console.log("Couldn't connect to MetaMask.");
-    });
+    }
 
   //if not using MetaMask
   }else{
