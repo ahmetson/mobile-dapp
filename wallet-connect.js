@@ -23,8 +23,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert('this is v1');
-console.log('run the program');
+alert('this is v2');
 /**
  * Setup the orchestra
  */
@@ -175,6 +174,8 @@ async function onConnect() {
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
   });
+
+
   // If the event is not dispatched by the end of the timeout,
   // the user probably doesn't have MetaMask installed.
   setTimeout(handleEthereum, 3000); // 3 seconds
@@ -209,14 +210,14 @@ async function onConnect() {
     if (ethereum && ethereum.isMetaMask) {
       console.log('Ethereum successfully detected!');
 
+      const { ethereum } = window;
+      provider = ethereum;
+      console.log("provider was set via metamask.");
+
       //get user accounts and store them
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
       const account = accounts[0];
       accountContainer.innerHTML = account;
-
-      const { ethereum } = window;
-      provider = ethereum;
-      console.log("provider was set via metamask.");
     }
     //if metamask is not connected and agent is not mobile
     else if(!mobileBrowser){
