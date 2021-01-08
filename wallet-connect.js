@@ -29,11 +29,6 @@ let accountContainer;
  */
 function init() {
 
-
-
-
-
-
   console.log("Initializing example");
   console.log("WalletConnectProvider is", WalletConnectProvider);
   console.log("Fortmatic is", Fortmatic);
@@ -201,8 +196,6 @@ async function onConnect() {
 
   await refreshAccountData();
 }
-
-
   //Handle the connection
   async function handleEthereum() {
 
@@ -267,7 +260,6 @@ async function onDisconnect() {
   document.querySelector("#prepare").style.display = "block";
   document.querySelector("#connected").style.display = "none";
 }
-
 
 /**
  * Main entry point.
