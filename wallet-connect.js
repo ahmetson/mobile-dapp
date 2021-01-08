@@ -23,7 +23,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert('this is v2.3');
+alert('this is v2.4');
 /**
  * Setup the orchestra
  */
@@ -167,18 +167,21 @@ async function onConnect() {
   let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
   //reliably detect both the mobile and extension Metamask provider
-  if (window.ethereum) {
+  if (mobileBrowser && window.ethereum) {
     console.log("call handleEthereum()");
     handleEthereum();
   }
-  // else if(mobileBrowse){
-  //   window.addEventListener('ethereum#initialized', handleEthereum, {
-  //     once: true,
-  // });
-  // // If the event is not dispatched by the end of the timeout,
-  // // the user probably doesn't have MetaMask installed.
-  // setTimeout(handleEthereum, 3000); // 3 seconds
-  // }
+  else if(mobileBrowse){
+    window.addEventListener('ethereum#initialized', handleEthereum, {
+      once: true,
+  });
+  // If the event is not dispatched by the end of the timeout,
+  // the user probably doesn't have MetaMask installed.
+  setTimeout(handleEthereum, 3000); // 3 seconds
+
+  //if agent is mobile, only metamask is supported currently
+  alert('Please use dApp browser.');
+  }
   //if metamask is not connected and agent is not mobile
   else if(!mobileBrowser){
     //open web3Modal popup
@@ -191,10 +194,7 @@ async function onConnect() {
         return;
     }
   }
-  //if agent is mobile, only metamask is supported currently
-  else {
-      alert('Please use dApp browser.');
-    }
+
 
   console.log("events are called looking for provider.");
   // Subscribe to accounts change
