@@ -17,13 +17,13 @@ let web3Modal
 // Chosen wallet provider given by the dialog window
 let provider;
 
-
 // Address of the selected account
 let selectedAccount;
 
+
 let accountContainer;
 
-alert('this is v2.41');
+
 /**
  * Setup the orchestra
  */
@@ -168,7 +168,6 @@ async function onConnect() {
 
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
-    console.log("call handleEthereum()");
     handleEthereum();
   }
   else if(mobileBrowser){
@@ -196,7 +195,6 @@ async function onConnect() {
   }
 
 
-  console.log("events are called looking for provider.");
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
     fetchAccountData();
@@ -227,14 +225,12 @@ async function onConnect() {
 
       const { ethereum } = window;
       provider = ethereum;
-      console.log("provider was set via metamask.");
+      console.log("provider was set via Metamask.");
 
       //get user accounts and store them
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
       const account = accounts[0];
-      //accountContainer.innerHTML = account;
     }
-
   }
 
 /**
