@@ -23,11 +23,13 @@ let selectedAccount;
 
 let accountContainer;
 
+alert('this is tester');
 
 /**
  * Setup the orchestra
  */
 function init() {
+
 
   console.log("Initializing example");
   console.log("WalletConnectProvider is", WalletConnectProvider);
@@ -162,12 +164,12 @@ async function refreshAccountData() {
  */
 async function onConnect() {
 
-  console.log("onConnect was called");
   // detects if connected through mobile browser
   let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
   //reliably detect both the mobile and extension Metamask provider
   if (window.ethereum) {
+    console.log("call handleEthereum()");
     handleEthereum();
   } else {
     window.addEventListener('ethereum#initialized', handleEthereum, {
@@ -178,7 +180,7 @@ async function onConnect() {
   setTimeout(handleEthereum, 3000); // 3 seconds
   }
 
-    console.log("events are called looking for provider.");
+  console.log("events are called looking for provider.");
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
     fetchAccountData();
@@ -196,13 +198,14 @@ async function onConnect() {
 
   await refreshAccountData();
 }
+
+
+
   //Handle the connection
   async function handleEthereum() {
 
   console.log("handleEthereum was called");
-    const { ethereum } = window;
-    provider = ethereum;
-    console.log("provider was set via metamask.");
+
     //if metamask is connected
     if (ethereum && ethereum.isMetaMask) {
       console.log('Ethereum successfully detected!');
@@ -211,8 +214,12 @@ async function onConnect() {
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
       const account = accounts[0];
       accountContainer.innerHTML = account;
+
+      const { ethereum } = window;
+      provider = ethereum;
+      console.log("provider was set via metamask.");
     }
-    //if metamask is not connected but agent is not mobile
+    //if metamask is not connected and agent is not mobile
     else if(!mobileBrowser){
       //open web3Modal popup
       console.log("Opening a dialog", web3Modal);
@@ -226,14 +233,9 @@ async function onConnect() {
     }
     //if agent is mobile, only metamask is supported currently
     else {
-        alert('Please install MetaMask!');
+        alert('Please use dApp browser.');
       }
   }
-
-
-
-
-
 
 /**
  * Disconnect wallet button pressed.
@@ -260,6 +262,7 @@ async function onDisconnect() {
   document.querySelector("#prepare").style.display = "block";
   document.querySelector("#connected").style.display = "none";
 }
+
 
 /**
  * Main entry point.
