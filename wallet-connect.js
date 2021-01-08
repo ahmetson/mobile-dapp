@@ -21,6 +21,7 @@ let provider;
 // Address of the selected account
 let selectedAccount;
 
+let accountContainer;
 
 
 /**
@@ -106,7 +107,7 @@ async function fetchAccountData() {
 
   // Get a handl
   const template = document.querySelector("#template-balance");
-  const accountContainer = document.querySelector("#accounts");
+  accountContainer = document.querySelector("#accounts");
 
   // Purge UI elements any previously loaded accounts
   accountContainer.innerHTML = '';
