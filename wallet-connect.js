@@ -184,17 +184,17 @@ async function onConnect() {
 
     console.log("events are called looking for provider.");
   // Subscribe to accounts change
-  ethereum.on("accountsChanged", (accounts) => {
+  provider.on("accountsChanged", (accounts) => {
     fetchAccountData();
   });
 
   // Subscribe to chainId change
-  ethereum.on("chainChanged", (chainId) => {
+  provider.on("chainChanged", (chainId) => {
     fetchAccountData();
   });
 
   // Subscribe to networkId change
-  ethereum.on("networkChanged", (networkId) => {
+  provider.on("networkChanged", (networkId) => {
     fetchAccountData();
   });
 
