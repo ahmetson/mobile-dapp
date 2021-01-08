@@ -23,7 +23,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert('this is v2.1');
+alert('this is v2.2');
 /**
  * Setup the orchestra
  */
@@ -169,13 +169,11 @@ async function onConnect() {
   //reliably detect both the mobile and extension Metamask provider
   if (window.ethereum) {
     console.log("call handleEthereum()");
-    await handleEthereum();
+    handleEthereum();
   } else {
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
   });
-
-
   // If the event is not dispatched by the end of the timeout,
   // the user probably doesn't have MetaMask installed.
   setTimeout(handleEthereum, 3000); // 3 seconds
