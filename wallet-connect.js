@@ -23,7 +23,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert('this is v2.4');
+alert('this is v2.41');
 /**
  * Setup the orchestra
  */
@@ -171,7 +171,7 @@ async function onConnect() {
     console.log("call handleEthereum()");
     handleEthereum();
   }
-  else if(mobileBrowse){
+  else if(mobileBrowser){
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
   });
