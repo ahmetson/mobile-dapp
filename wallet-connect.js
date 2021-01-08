@@ -23,15 +23,11 @@ let selectedAccount;
 
 let accountContainer;
 
-alert('v0.9');
+alert('this is v2.1');
 /**
  * Setup the orchestra
  */
 function init() {
-
-
-
-
 
 
   console.log("Initializing example");
@@ -167,23 +163,25 @@ async function refreshAccountData() {
  */
 async function onConnect() {
 
-  console.log("onConnect was called");
   // detects if connected through mobile browser
   let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
   //reliably detect both the mobile and extension Metamask provider
   if (window.ethereum) {
-    handleEthereum();
+    console.log("call handleEthereum()");
+    await handleEthereum();
   } else {
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
   });
+
+
   // If the event is not dispatched by the end of the timeout,
   // the user probably doesn't have MetaMask installed.
   setTimeout(handleEthereum, 3000); // 3 seconds
   }
 
-    console.log("events are called looking for provider.");
+  console.log("events are called looking for provider.");
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
     fetchAccountData();
@@ -207,19 +205,21 @@ async function onConnect() {
   async function handleEthereum() {
 
   console.log("handleEthereum was called");
-    const { ethereum } = window;
-    provider = ethereum;
-    console.log("provider was set via metamask.");
+
     //if metamask is connected
     if (ethereum && ethereum.isMetaMask) {
       console.log('Ethereum successfully detected!');
 
+      const { ethereum } = window;
+      provider = ethereum;
+      console.log("provider was set via metamask.");
+
       //get user accounts and store them
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
       const account = accounts[0];
-      accountContainer.innerHTML = account;
+      //accountContainer.innerHTML = account;
     }
-    //if metamask is not connected but agent is not mobile
+    //if metamask is not connected and agent is not mobile
     else if(!mobileBrowser){
       //open web3Modal popup
       console.log("Opening a dialog", web3Modal);
@@ -233,14 +233,9 @@ async function onConnect() {
     }
     //if agent is mobile, only metamask is supported currently
     else {
-        alert('Please install MetaMask!');
+        alert('Please use dApp browser.');
       }
   }
-
-
-
-
-
 
 /**
  * Disconnect wallet button pressed.
