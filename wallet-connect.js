@@ -23,7 +23,8 @@ let selectedAccount;
 
 let accountContainer;
 
-alert('this is v1')
+alert('this is v1');
+console.log('run the program');
 /**
  * Setup the orchestra
  */
