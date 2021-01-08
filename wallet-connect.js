@@ -23,7 +23,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert('this is v2');
+alert('this is v2.1');
 /**
  * Setup the orchestra
  */
@@ -169,7 +169,7 @@ async function onConnect() {
   //reliably detect both the mobile and extension Metamask provider
   if (window.ethereum) {
     console.log("call handleEthereum()");
-    handleEthereum();
+    await handleEthereum();
   } else {
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
