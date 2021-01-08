@@ -23,7 +23,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert('this is v2.2');
+alert('this is v2.3');
 /**
  * Setup the orchestra
  */
@@ -170,14 +170,31 @@ async function onConnect() {
   if (window.ethereum) {
     console.log("call handleEthereum()");
     handleEthereum();
-  } else {
-    window.addEventListener('ethereum#initialized', handleEthereum, {
-      once: true,
-  });
-  // If the event is not dispatched by the end of the timeout,
-  // the user probably doesn't have MetaMask installed.
-  setTimeout(handleEthereum, 3000); // 3 seconds
   }
+  // else if(mobileBrowse){
+  //   window.addEventListener('ethereum#initialized', handleEthereum, {
+  //     once: true,
+  // });
+  // // If the event is not dispatched by the end of the timeout,
+  // // the user probably doesn't have MetaMask installed.
+  // setTimeout(handleEthereum, 3000); // 3 seconds
+  // }
+  //if metamask is not connected and agent is not mobile
+  else if(!mobileBrowser){
+    //open web3Modal popup
+    console.log("Opening a dialog", web3Modal);
+    try {
+      provider = await web3Modal.connect();
+      console.log("provider was set via web3Modal.");
+    } catch(e) {
+        console.log("Could not get a wallet connection", e);
+        return;
+    }
+  }
+  //if agent is mobile, only metamask is supported currently
+  else {
+      alert('Please use dApp browser.');
+    }
 
   console.log("events are called looking for provider.");
   // Subscribe to accounts change
@@ -217,22 +234,7 @@ async function onConnect() {
       const account = accounts[0];
       //accountContainer.innerHTML = account;
     }
-    //if metamask is not connected and agent is not mobile
-    else if(!mobileBrowser){
-      //open web3Modal popup
-      console.log("Opening a dialog", web3Modal);
-      try {
-        provider = await web3Modal.connect();
-        console.log("provider was set via web3Modal.");
-      } catch(e) {
-          console.log("Could not get a wallet connection", e);
-          return;
-      }
-    }
-    //if agent is mobile, only metamask is supported currently
-    else {
-        alert('Please use dApp browser.');
-      }
+
   }
 
 /**
