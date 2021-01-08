@@ -210,14 +210,15 @@ async function onConnect() {
     if (ethereum && ethereum.isMetaMask) {
       console.log('Ethereum successfully detected!');
 
+      const { ethereum } = window;
+      provider = ethereum;
+      console.log("provider was set via metamask.");
+
       //get user accounts and store them
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
       const account = accounts[0];
       accountContainer.innerHTML = account;
 
-      const { ethereum } = window;
-      provider = ethereum;
-      console.log("provider was set via metamask.");
     }
     //if metamask is not connected and agent is not mobile
     else if(!mobileBrowser){
