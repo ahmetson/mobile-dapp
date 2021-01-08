@@ -166,7 +166,7 @@ async function refreshAccountData() {
  */
 async function onConnect() {
 
-  console.log("onConnect");
+  console.log("onConnect was called");
   // detects if connected through mobile browser
   let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -207,6 +207,8 @@ async function onConnect() {
 
   console.log("handleEthereum was called");
     const { ethereum } = window;
+    provider = ethereum;
+    console.log("provider was set via metamask.");
     //if metamask is connected
     if (ethereum && ethereum.isMetaMask) {
       console.log('Ethereum successfully detected!');
@@ -221,8 +223,8 @@ async function onConnect() {
       //open web3Modal popup
       console.log("Opening a dialog", web3Modal);
       try {
-        console.log("provider was set.");
         provider = await web3Modal.connect();
+        console.log("provider was set via web3Modal.");
       } catch(e) {
           console.log("Could not get a wallet connection", e);
           return;
