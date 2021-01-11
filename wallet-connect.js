@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.54');
+alert('this is version 2.55');
 
 /**
  * Setup the orchestra
@@ -101,7 +101,7 @@ async function fetchAccountData() {
   console.log("Got accounts", accounts);
   selectedAccount = accounts[0];
 
-  alert('selectedAccount: ' +selectedAccount);
+  //alert('selectedAccount: ' +selectedAccount);
 
   document.querySelector("#selected-account").textContent = selectedAccount;
 
@@ -198,28 +198,24 @@ async function onConnect() {
     }
   }
 
-  window.ethereum.on('accountsChanged', function (accounts) {
-  fetchAccountData();
-});
 
-window.ethereum.on('networkChanged', function (networkId) {
-  fetchAccountData();
-});
-
-  // // Subscribe to accounts change
-  // provider.on("accountsChanged", (accounts) => {
-  //   fetchAccountData();
-  // });
-
-  // Subscribe to chainId change
-  provider.on("chainChanged", (chainId) => {
+  // Subscribe to accounts change
+  provider.on("accountsChanged", (accounts) => {
+    alert('accountsChanged');
     fetchAccountData();
   });
 
-  // // Subscribe to networkId change
-  // provider.on("networkChanged", (networkId) => {
-  //   fetchAccountData();
-  // });
+  // Subscribe to chainId change
+  provider.on("chainChanged", (chainId) => {
+    alert('chainChanged');
+    fetchAccountData();
+  });
+
+  // Subscribe to networkId change
+  provider.on("networkChanged", (networkId) => {
+    alert('networkChanged');
+    fetchAccountData();
+  });
 
   await refreshAccountData();
 }
