@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.55');
+alert('this is version 2.56');
 
 /**
  * Setup the orchestra
@@ -208,6 +208,7 @@ async function onConnect() {
   // Subscribe to chainId change
   provider.on("chainChanged", (chainId) => {
     alert('chainChanged');
+    window.location.reload();
     fetchAccountData();
   });
 
@@ -226,6 +227,8 @@ async function onConnect() {
 
 
     //if metamask is connected
+    //ethereum.isMetaMask This property is not guaranteed to be correct for all providers.
+    //Non-MetaMask providers may also set this property to true.
     if (ethereum && ethereum.isMetaMask) {
       console.log('Ethereum successfully detected!');
 
