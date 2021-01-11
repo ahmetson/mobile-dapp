@@ -24,6 +24,8 @@ let selectedAccount;
 let accountContainer;
 
 
+alert('this is version 2.5');
+
 /**
  * Setup the orchestra
  */
@@ -194,6 +196,10 @@ async function onConnect() {
     }
   }
 
+
+  window.ethereum.on('accountsChanged', function (accounts) {
+    fetchAccountData();
+});
 
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
