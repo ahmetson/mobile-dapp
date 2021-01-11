@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.59');
+alert('this is version 2.591');
 
 /**
  * Setup the orchestra
@@ -174,7 +174,7 @@ async function onConnect() {
   if (mobileBrowser && window.ethereum) {
     alert('has metamask');
     //provider = await handleEthereum();
-    provider = window.ethereum;
+    provider = await window.ethereum;
   }
   else if(mobileBrowser){
     alert('is mobile');
