@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.57');
+alert('this is version 2.58');
 
 /**
  * Setup the orchestra
@@ -172,48 +172,50 @@ async function onConnect() {
 
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
+    alert('has metamask');
     handleEthereum();
   }
-  // else if(mobileBrowser){
-  //   window.addEventListener('ethereum#initialized', handleEthereum, {
-  //     once: true,
-  // });
-  // // If the event is not dispatched by the end of the timeout,
-  // // the user probably doesn't have MetaMask installed.
-  // setTimeout(handleEthereum, 3000); // 3 seconds
-  //
-  // //if agent is mobile, only metamask is supported currently
-  // alert('Please use dApp browser.');
-  // }
-  // //if metamask is not connected and agent is not mobile
-  // else if(!mobileBrowser){
-  //   //open web3Modal popup
-  //   console.log("Opening a dialog", web3Modal);
-  //   try {
-  //     provider = await web3Modal.connect();
-  //     console.log("provider was set via web3Modal.");
-  //   } catch(e) {
-  //       console.log("Could not get a wallet connection", e);
-  //       return;
-  //   }
-  // }
+  else if(mobileBrowser){
+    alert('is mobile');
+    window.addEventListener('ethereum#initialized', handleEthereum, {
+      once: true,
+  });
+  // If the event is not dispatched by the end of the timeout,
+  // the user probably doesn't have MetaMask installed.
+  setTimeout(handleEthereum, 3000); // 3 seconds
+
+  //if agent is mobile, only metamask is supported currently
+  alert('Please use dApp browser.');
+  }
+  //if metamask is not connected and agent is not mobile
+  else if(!mobileBrowser){
+    //open web3Modal popup
+    console.log("Opening a dialog", web3Modal);
+    try {
+      provider = await web3Modal.connect();
+      console.log("provider was set via web3Modal.");
+    } catch(e) {
+        console.log("Could not get a wallet connection", e);
+        return;
+    }
+  }
 
 
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
-    alert('accountsChanged');
+    //alert('accountsChanged');
     fetchAccountData();
   });
 
   // Subscribe to chainId change
   provider.on("chainChanged", (chainId) => {
-    alert('chainChanged');
+    //alert('chainChanged');
     fetchAccountData();
   });
 
   // Subscribe to networkId change
   provider.on("networkChanged", (networkId) => {
-    alert('networkChanged');
+    //alert('networkChanged');
     fetchAccountData();
   });
 
@@ -230,9 +232,8 @@ async function onConnect() {
     //Non-MetaMask providers may also set this property to true.
     if (ethereum && ethereum.isMetaMask) {
       console.log('Ethereum successfully detected!');
-
-      const { ethereum } = window;
-      provider = ethereum;
+      
+      provider = window;
       console.log("provider was set via Metamask.");
 
       //get user accounts and store them
