@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.52');
+alert('this is version 2.53');
 
 /**
  * Setup the orchestra
@@ -95,7 +95,7 @@ async function fetchAccountData() {
   document.querySelector("#network-name").textContent = chainData.name;
 
   // Get list of accounts of the connected wallet
-  const accounts = await web3.eth.getAccounts();
+  const accounts = await ethereum.enable();
 
   // MetaMask does not give you all accounts, only the selected account
   console.log("Got accounts", accounts);
