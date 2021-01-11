@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.58');
+alert('this is version 2.59');
 
 /**
  * Setup the orchestra
@@ -173,7 +173,8 @@ async function onConnect() {
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
     alert('has metamask');
-    handleEthereum();
+    //provider = await handleEthereum();
+    provider = window.ethereum;
   }
   else if(mobileBrowser){
     alert('is mobile');
@@ -232,8 +233,9 @@ async function onConnect() {
     //Non-MetaMask providers may also set this property to true.
     if (ethereum && ethereum.isMetaMask) {
       console.log('Ethereum successfully detected!');
-      
-      provider = window;
+
+      const { ethereum } = window;
+      provider = ethereum;
       console.log("provider was set via Metamask.");
 
       //get user accounts and store them
