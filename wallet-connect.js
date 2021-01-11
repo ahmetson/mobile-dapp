@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.5');
+alert('this is version 2.52');
 
 /**
  * Setup the orchestra
@@ -100,6 +100,8 @@ async function fetchAccountData() {
   // MetaMask does not give you all accounts, only the selected account
   console.log("Got accounts", accounts);
   selectedAccount = accounts[0];
+
+  alert('selectedAccount: ',selectedAccount);
 
   document.querySelector("#selected-account").textContent = selectedAccount;
 
@@ -196,10 +198,6 @@ async function onConnect() {
     }
   }
 
-
-  window.ethereum.on('accountsChanged', function (accounts) {
-    fetchAccountData();
-});
 
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
