@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.56');
+alert('this is version 2.57');
 
 /**
  * Setup the orchestra
@@ -174,29 +174,29 @@ async function onConnect() {
   if (mobileBrowser && window.ethereum) {
     handleEthereum();
   }
-  else if(mobileBrowser){
-    window.addEventListener('ethereum#initialized', handleEthereum, {
-      once: true,
-  });
-  // If the event is not dispatched by the end of the timeout,
-  // the user probably doesn't have MetaMask installed.
-  setTimeout(handleEthereum, 3000); // 3 seconds
-
-  //if agent is mobile, only metamask is supported currently
-  alert('Please use dApp browser.');
-  }
-  //if metamask is not connected and agent is not mobile
-  else if(!mobileBrowser){
-    //open web3Modal popup
-    console.log("Opening a dialog", web3Modal);
-    try {
-      provider = await web3Modal.connect();
-      console.log("provider was set via web3Modal.");
-    } catch(e) {
-        console.log("Could not get a wallet connection", e);
-        return;
-    }
-  }
+  // else if(mobileBrowser){
+  //   window.addEventListener('ethereum#initialized', handleEthereum, {
+  //     once: true,
+  // });
+  // // If the event is not dispatched by the end of the timeout,
+  // // the user probably doesn't have MetaMask installed.
+  // setTimeout(handleEthereum, 3000); // 3 seconds
+  //
+  // //if agent is mobile, only metamask is supported currently
+  // alert('Please use dApp browser.');
+  // }
+  // //if metamask is not connected and agent is not mobile
+  // else if(!mobileBrowser){
+  //   //open web3Modal popup
+  //   console.log("Opening a dialog", web3Modal);
+  //   try {
+  //     provider = await web3Modal.connect();
+  //     console.log("provider was set via web3Modal.");
+  //   } catch(e) {
+  //       console.log("Could not get a wallet connection", e);
+  //       return;
+  //   }
+  // }
 
 
   // Subscribe to accounts change
@@ -208,7 +208,6 @@ async function onConnect() {
   // Subscribe to chainId change
   provider.on("chainChanged", (chainId) => {
     alert('chainChanged');
-    window.location.reload();
     fetchAccountData();
   });
 
