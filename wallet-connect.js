@@ -217,7 +217,6 @@ async function onConnect() {
   //Handle the connection
   async function handleEthereum() {
 
-  console.log("handleEthereum was called");
 
     //if metamask is connected
     if (ethereum && ethereum.isMetaMask) {
@@ -228,8 +227,8 @@ async function onConnect() {
       console.log("provider was set via Metamask.");
 
       //get user accounts and store them
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      const account = accounts[0];
+      // const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      // const account = accounts[0];
     }
   }
 
