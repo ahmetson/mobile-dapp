@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.63');
+alert('this is version 2.64');
 
 /**
  * Setup the orchestra
@@ -173,18 +173,24 @@ async function onConnect() {
 
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
+
+
+    try{
+      //option1
     // const { ethereum } = window;
     // provider = ethereum;
 
-    try{
-    const createMetaMaskProvider = require('metamask-extension-provider');
-    const provider = createMetaMaskProvider();
+      //option2
+    // const createMetaMaskProvider = require('metamask-extension-provider');
+    // const provider = createMetaMaskProvider();
+    import detectEthereumProvider from '@metamask/detect-provider';
+    provider = await detectEthereumProvider();
+
   }catch(e){
     alert('error: ' +e);
   }
 
-    // import detectEthereumProvider from '@metamask/detect-provider';
-    // const provider = await detectEthereumProvider();
+
   }
   else if(mobileBrowser){
     window.addEventListener('ethereum#initialized', handleEthereum, {
