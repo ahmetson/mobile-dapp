@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.591');
+alert('this is version 2.6');
 
 /**
  * Setup the orchestra
@@ -83,8 +83,10 @@ function init() {
  */
 async function fetchAccountData() {
 
+  alert(provider);
   // Get a Web3 instance for the wallet
   window.web3 = new Web3(provider);
+
 
   console.log("Web3 instance is", web3);
 
@@ -172,12 +174,9 @@ async function onConnect() {
 
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
-    alert('has metamask');
-    //provider = await handleEthereum();
-    provider = await window.ethereum;
+    provider = await handleEthereum();
   }
   else if(mobileBrowser){
-    alert('is mobile');
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
   });
