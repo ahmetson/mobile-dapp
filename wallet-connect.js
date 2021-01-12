@@ -23,7 +23,9 @@ let selectedAccount;
 
 let accountContainer;
 
-alert('version 2.63');
+
+alert('this is version 2.621');
+
 /**
  * Setup the orchestra
  */
@@ -84,6 +86,7 @@ async function fetchAccountData() {
   // Get a Web3 instance for the wallet
   window.web3 = new Web3(provider);
 
+
   console.log("Web3 instance is", web3);
 
   // Get connected chain id from Ethereum node
@@ -93,11 +96,13 @@ async function fetchAccountData() {
   document.querySelector("#network-name").textContent = chainData.name;
 
   // Get list of accounts of the connected wallet
-  const accounts = await web3.eth.getAccounts();
+  const accounts = await ethereum.enable();
 
   // MetaMask does not give you all accounts, only the selected account
   console.log("Got accounts", accounts);
   selectedAccount = accounts[0];
+
+  //alert('selectedAccount: ' +selectedAccount);
 
   document.querySelector("#selected-account").textContent = selectedAccount;
 
@@ -168,7 +173,14 @@ async function onConnect() {
 
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
-    handleEthereum();
+    const { ethereum } = window;
+    provider = ethereum;
+
+    // const createMetaMaskProvider = require('metamask-extension-provider');
+    // const provider = createMetaMaskProvider();
+
+    // import detectEthereumProvider from '@metamask/detect-provider';
+    // const provider = await detectEthereumProvider();
   }
   else if(mobileBrowser){
     window.addEventListener('ethereum#initialized', handleEthereum, {
@@ -197,16 +209,19 @@ async function onConnect() {
 
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
+    //alert('accountsChanged');
     fetchAccountData();
   });
 
   // Subscribe to chainId change
   provider.on("chainChanged", (chainId) => {
+    //alert('chainChanged');
     fetchAccountData();
   });
 
   // Subscribe to networkId change
   provider.on("networkChanged", (networkId) => {
+    //alert('networkChanged');
     fetchAccountData();
   });
 
@@ -214,24 +229,6 @@ async function onConnect() {
 }
 
 
-  //Handle the connection
-  async function handleEthereum() {
-
-  console.log("handleEthereum was called");
-
-    //if metamask is connected
-    if (ethereum && ethereum.isMetaMask) {
-      console.log('Ethereum successfully detected!');
-
-      const { ethereum } = window;
-      provider = ethereum;
-      console.log("provider was set via Metamask.");
-
-      //get user accounts and store them
-      // const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      // const account = accounts[0];
-    }
-  }
 
 /**
  * Disconnect wallet button pressed.
