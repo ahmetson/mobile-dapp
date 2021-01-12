@@ -174,21 +174,21 @@ async function onConnect() {
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
 
-
-    try{
-      //option1
-    // const { ethereum } = window;
-    // provider = ethereum;
-
-      //option2
-    // const createMetaMaskProvider = require('metamask-extension-provider');
-    // const provider = createMetaMaskProvider();
-    import detectEthereumProvider from '@metamask/detect-provider';
-    provider = await detectEthereumProvider();
-
-  }catch(e){
-    alert('error: ' +e);
-  }
+    handleEthereum();
+  //   try{
+  //     option1
+  //   const { ethereum } = window;
+  //   provider = ethereum;
+  //
+  //     option2
+  //   const createMetaMaskProvider = require('metamask-extension-provider');
+  //   const provider = createMetaMaskProvider();
+  //   import detectEthereumProvider from '@metamask/detect-provider';
+  //   provider = await detectEthereumProvider();
+  //
+  // }catch(e){
+  //   alert('error: ' +e);
+  // }
 
 
   }
@@ -238,7 +238,24 @@ async function onConnect() {
   await refreshAccountData();
 }
 
+//Handle the connection
+  async function handleEthereum() {
 
+  console.log("handleEthereum was called");
+
+    //if metamask is connected
+    if (ethereum && ethereum.isMetaMask) {
+      console.log('Ethereum successfully detected!');
+
+      const { ethereum } = window;
+      provider = ethereum;
+      console.log("provider was set via Metamask.");
+
+      //get user accounts and store them
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      const account = accounts[0];
+    }
+  }
 
 /**
  * Disconnect wallet button pressed.
