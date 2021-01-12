@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.61');
+alert('this is version 2.62');
 
 /**
  * Setup the orchestra
@@ -174,12 +174,13 @@ async function onConnect() {
 
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
-    if (ethereum && ethereum.isMetaMask) {
-      console.log('Ethereum successfully detected!');
+    handleEthereum();
 
-      const { ethereum } = window;
-      provider = ethereum;
-      console.log("provider was set via Metamask.");
+    // const createMetaMaskProvider = require('metamask-extension-provider');
+    // const provider = createMetaMaskProvider();
+
+    // import detectEthereumProvider from '@metamask/detect-provider';
+    // const provider = await detectEthereumProvider();
   }
   else if(mobileBrowser){
     window.addEventListener('ethereum#initialized', handleEthereum, {
@@ -226,6 +227,27 @@ async function onConnect() {
 
   await refreshAccountData();
 }
+
+
+  //Handle the connection
+  async function handleEthereum() {
+
+
+    //if metamask is connected
+    //ethereum.isMetaMask This property is not guaranteed to be correct for all providers.
+    //Non-MetaMask providers may also set this property to true.
+    if (ethereum && ethereum.isMetaMask) {
+      console.log('Ethereum successfully detected!');
+
+      const { ethereum } = window;
+      provider = ethereum;
+      console.log("provider was set via Metamask.");
+
+      //get user accounts and store them
+      // const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      // const account = accounts[0];
+    }
+  }
 
 /**
  * Disconnect wallet button pressed.
