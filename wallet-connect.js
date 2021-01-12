@@ -23,9 +23,7 @@ let selectedAccount;
 
 let accountContainer;
 
-
-alert('this is version 2.62');
-
+alert('version 2.63');
 /**
  * Setup the orchestra
  */
@@ -83,10 +81,8 @@ function init() {
  */
 async function fetchAccountData() {
 
-  alert(provider);
   // Get a Web3 instance for the wallet
   window.web3 = new Web3(provider);
-
 
   console.log("Web3 instance is", web3);
 
@@ -97,13 +93,11 @@ async function fetchAccountData() {
   document.querySelector("#network-name").textContent = chainData.name;
 
   // Get list of accounts of the connected wallet
-  const accounts = await ethereum.enable();
+  const accounts = await web3.eth.getAccounts();
 
   // MetaMask does not give you all accounts, only the selected account
   console.log("Got accounts", accounts);
   selectedAccount = accounts[0];
-
-  //alert('selectedAccount: ' +selectedAccount);
 
   document.querySelector("#selected-account").textContent = selectedAccount;
 
@@ -175,12 +169,6 @@ async function onConnect() {
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
     handleEthereum();
-
-    // const createMetaMaskProvider = require('metamask-extension-provider');
-    // const provider = createMetaMaskProvider();
-
-    // import detectEthereumProvider from '@metamask/detect-provider';
-    // const provider = await detectEthereumProvider();
   }
   else if(mobileBrowser){
     window.addEventListener('ethereum#initialized', handleEthereum, {
@@ -209,19 +197,16 @@ async function onConnect() {
 
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts) => {
-    //alert('accountsChanged');
     fetchAccountData();
   });
 
   // Subscribe to chainId change
   provider.on("chainChanged", (chainId) => {
-    //alert('chainChanged');
     fetchAccountData();
   });
 
   // Subscribe to networkId change
   provider.on("networkChanged", (networkId) => {
-    //alert('networkChanged');
     fetchAccountData();
   });
 
@@ -232,10 +217,9 @@ async function onConnect() {
   //Handle the connection
   async function handleEthereum() {
 
+  console.log("handleEthereum was called");
 
     //if metamask is connected
-    //ethereum.isMetaMask This property is not guaranteed to be correct for all providers.
-    //Non-MetaMask providers may also set this property to true.
     if (ethereum && ethereum.isMetaMask) {
       console.log('Ethereum successfully detected!');
 
