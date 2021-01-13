@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A simple page to show swapping CWS-ETH in uniswap after web3modal",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
