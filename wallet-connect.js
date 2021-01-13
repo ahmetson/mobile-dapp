@@ -5,7 +5,7 @@
  */
 try{
   import detectEthereumProvider from '@metamask/detect-provider';
-  alert('this is version 2.661');
+  alert('this is version 2.67');
 }
 catch(e){
   alert('could not import metamask provider');
@@ -181,7 +181,10 @@ async function onConnect() {
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
 
-    handleEthereum();
+    provider = await detectEthereumProvider()
+    //handleEthereum();
+
+
   //   try{
   //     option1
   //   const { ethereum } = window;
