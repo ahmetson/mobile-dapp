@@ -24,7 +24,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.64');
+alert('this is version 2.65');
 
 /**
  * Setup the orchestra
@@ -218,19 +218,19 @@ async function onConnect() {
 
 
   // Subscribe to accounts change
-  provider.on("accountsChanged", (accounts) => {
+  ethereum.on("accountsChanged", (accounts) => {
     //alert('accountsChanged');
     fetchAccountData();
   });
 
   // Subscribe to chainId change
-  provider.on("chainChanged", (chainId) => {
+  ethereum.on("chainChanged", (chainId) => {
     //alert('chainChanged');
     fetchAccountData();
   });
 
   // Subscribe to networkId change
-  provider.on("networkChanged", (networkId) => {
+  ethereum.on("networkChanged", (networkId) => {
     //alert('networkChanged');
     fetchAccountData();
   });
