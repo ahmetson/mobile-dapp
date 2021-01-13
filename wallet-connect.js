@@ -5,7 +5,7 @@
  */
 try{
   import detectEthereumProvider from '@metamask/detect-provider';
-  alert('this is version 2.66');
+  alert('this is version 2.661');
 }
 catch(e){
   alert('could not import metamask provider');
