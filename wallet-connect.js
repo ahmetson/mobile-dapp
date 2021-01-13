@@ -3,13 +3,8 @@
 /**
  * Example JavaScript code that interacts with the page and Web3 wallets
  */
-try{
-  import detectEthereumProvider from '@metamask/detect-provider';
   alert('this is version 2.67');
-}
-catch(e){
-  alert('could not import metamask provider');
-}
+
 
  // Unpkg imports
 const Web3Modal = window.Web3Modal.default;
