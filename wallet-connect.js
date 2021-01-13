@@ -3,6 +3,13 @@
 /**
  * Example JavaScript code that interacts with the page and Web3 wallets
  */
+try{
+  import detectEthereumProvider from '@metamask/detect-provider';
+  alert('this is version 2.65');
+}
+catch(e){
+  alert('could not import metamask provider');
+}
 
  // Unpkg imports
 const Web3Modal = window.Web3Modal.default;
@@ -24,7 +31,7 @@ let selectedAccount;
 let accountContainer;
 
 
-alert('this is version 2.65');
+
 
 /**
  * Setup the orchestra
@@ -225,7 +232,8 @@ async function onConnect() {
 
   // Subscribe to chainId change
   ethereum.on("chainChanged", (chainId) => {
-    //alert('chainChanged');
+    // We recommend reloading the page unless you have good reason not to.
+    window.location.reload();
     fetchAccountData();
   });
 
