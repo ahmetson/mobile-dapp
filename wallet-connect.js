@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 2.92');
+alert('this is version 2.93');
 /**
  * Setup the orchestra
  */
@@ -167,6 +167,7 @@ async function refreshAccountData() {
 function handleChainChanged(_chainId) {
   // We recommend reloading the page, unless you must do otherwise
   window.location.reload();
+  fetchAccountData();
 }
 
 
