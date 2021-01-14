@@ -3,7 +3,6 @@
 /**
  * Example JavaScript code that interacts with the page and Web3 wallets
  */
-  alert('this is version 2.67');
 
 
  // Unpkg imports
@@ -27,7 +26,7 @@ let accountContainer;
 
 
 
-
+alert('this is version 2.67');
 /**
  * Setup the orchestra
  */
@@ -165,6 +164,34 @@ async function refreshAccountData() {
 }
 
 
+function handleChainChanged(_chainId) {
+  // We recommend reloading the page, unless you must do otherwise
+  window.location.reload();
+}
+
+
+//Handle the connection
+  async function handleEthereum() {
+
+    const { ethereum } = window;
+    if (ethereum && ethereum.isMetaMask) {
+      console.log('Ethereum successfully detected!');
+      // Access the decentralized web!
+    } else {
+      console.log('Please install MetaMask!');
+    }
+  }
+
+  function handleAccountsChanged(accounts) {
+    if (accounts.length === 0) {
+      // MetaMask is locked or the user has not connected any accounts
+      console.log('Please connect to MetaMask.');
+    } else if (accounts[0] !== currentAccount) {
+      currentAccount = accounts[0];
+      // Do any other work!
+    }
+  }
+
 /**
  * Connect wallet button pressed.
  */
@@ -176,28 +203,49 @@ async function onConnect() {
   //reliably detect both the mobile and extension Metamask provider
   if (mobileBrowser && window.ethereum) {
 
+    //Detect the MetaMask Ethereum provider
     provider = await detectEthereumProvider()
     //handleEthereum();
+    if (provider !== window.ethereum) {
+      console.error('Do you have multiple wallets installed?');
+    }
 
 
-  //   try{
-  //     option1
-  //   const { ethereum } = window;
-  //   provider = ethereum;
-  //
-  //     option2
-  //   const createMetaMaskProvider = require('metamask-extension-provider');
-  //   const provider = createMetaMaskProvider();
-  //   import detectEthereumProvider from '@metamask/detect-provider';
-  //   provider = await detectEthereumProvider();
-  //
-  // }catch(e){
-  //   alert('error: ' +e);
-  // }
+    //Handle chain (network) and chainChanged (per EIP-1193)
+    const chainId = await ethereum.request({ method: 'eth_chainId' });
+    handleChainChanged(chainId);
 
 
+    //Handle user accounts and accountsChanged (per EIP-1193)
+    let currentAccount = null;
+    ethereum
+      .request({ method: 'eth_accounts' })
+      .then(handleAccountsChanged)
+      .catch((err) => {
+        // Some unexpected error.
+        // For backwards compatibility reasons, if no accounts are available,
+        // eth_accounts will return an empty array.
+        console.error(err);
+      });
+
+
+      ethereum
+        .request({ method: 'eth_requestAccounts' })
+        .then(handleAccountsChanged)
+        .catch((err) => {
+          if (err.code === 4001) {
+            // EIP-1193 userRejectedRequest error
+            // If this happens, the user rejected the connection request.
+            console.log('Please connect to MetaMask.');
+          } else {
+            console.error(err);
+          }
+        });
   }
+
+
   else if(mobileBrowser){
+    alert('mobile browser');
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
   });
@@ -223,45 +271,31 @@ async function onConnect() {
 
 
   // Subscribe to accounts change
-  ethereum.on("accountsChanged", (accounts) => {
-    //alert('accountsChanged');
-    fetchAccountData();
-  });
+  ethereum.on('accountsChanged', handleAccountsChanged);
+  // provider.on("accountsChanged", (accounts) => {
+  //   //alert('accountsChanged');
+  //   fetchAccountData();
+  // });
 
   // Subscribe to chainId change
-  ethereum.on("chainChanged", (chainId) => {
-    // We recommend reloading the page unless you have good reason not to.
-    window.location.reload();
-    fetchAccountData();
-  });
+  ethereum.on('chainChanged', handleChainChanged);
+  // provider.on("chainChanged", (chainId) => {
+  //   // We recommend reloading the page unless you have good reason not to.
+  //   //window.location.reload();
+  //   fetchAccountData();
+  // });
 
   // Subscribe to networkId change
-  ethereum.on("networkChanged", (networkId) => {
-    //alert('networkChanged');
-    fetchAccountData();
-  });
+  ethereum.on('accountsChanged', handleAccountsChanged);
+  // provider.on("networkChanged", (networkId) => {
+  //   //alert('networkChanged');
+  //   fetchAccountData();
+  // });
 
   await refreshAccountData();
 }
 
-//Handle the connection
-  async function handleEthereum() {
 
-  console.log("handleEthereum was called");
-
-    //if metamask is connected
-    if (ethereum && ethereum.isMetaMask) {
-      console.log('Ethereum successfully detected!');
-
-      const { ethereum } = window;
-      provider = ethereum;
-      console.log("provider was set via Metamask.");
-
-      //get user accounts and store them
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      const account = accounts[0];
-    }
-  }
 
 /**
  * Disconnect wallet button pressed.
