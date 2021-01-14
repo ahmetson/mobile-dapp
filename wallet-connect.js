@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 2.9');
+alert('this is version 2.91');
 /**
  * Setup the orchestra
  */
@@ -213,7 +213,7 @@ async function onConnect() {
 
     //Handle chain (network) and chainChanged (per EIP-1193)
     const chainId = await ethereum.request({ method: 'eth_chainId' });
-    handleChainChanged(chainId);
+    //handleChainChanged(chainId);
 
 
     //Handle user accounts and accountsChanged (per EIP-1193)
