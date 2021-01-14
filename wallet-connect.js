@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 2.7');
+alert('this is version 2.8');
 /**
  * Setup the orchestra
  */
@@ -245,7 +245,6 @@ async function onConnect() {
 
 
   else if(mobileBrowser){
-    alert('mobile browser');
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
   });
@@ -291,6 +290,10 @@ async function onConnect() {
   //   //alert('networkChanged');
   //   fetchAccountData();
   // });
+
+  ethereum.on('disconnect', (code, reason) => {
+    console.log(`Ethereum Provider connection closed: ${reason}. Code: ${code}`);
+});
 
   await refreshAccountData();
 }
