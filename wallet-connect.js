@@ -188,8 +188,8 @@ function handleChainChanged(_chainId) {
       console.log('Please connect to MetaMask.');
     } else if (accounts[0] !== currentAccount) {
       currentAccount = accounts[0];
-      fetchAccountData();
     }
+    fetchAccountData();
   }
 
 /**
@@ -284,12 +284,6 @@ async function onConnect() {
   //   fetchAccountData();
   // });
 
-  // Subscribe to networkId change
-  ethereum.on('accountsChanged', handleAccountsChanged);
-  // provider.on("networkChanged", (networkId) => {
-  //   //alert('networkChanged');
-  //   fetchAccountData();
-  // });
 
   ethereum.on('disconnect', (code, reason) => {
     console.error(`Ethereum Provider connection closed.`);
