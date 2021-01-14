@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 2.91');
+alert('this is version 2.92');
 /**
  * Setup the orchestra
  */
@@ -292,7 +292,7 @@ async function onConnect() {
   // });
 
   ethereum.on('disconnect', (code, reason) => {
-    console.log(`Ethereum Provider connection closed: ${reason}. Code: ${code}`);
+    console.error(`Ethereum Provider connection closed.`);
 });
 
   await refreshAccountData();
