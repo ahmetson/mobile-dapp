@@ -293,6 +293,7 @@ async function onConnect() {
 
   ethereum.on('disconnect', (code, reason) => {
     console.error(`Ethereum Provider connection closed.`);
+    fetchAccountData();
 });
 
   await refreshAccountData();
