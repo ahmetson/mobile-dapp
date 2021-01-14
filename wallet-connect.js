@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 2.8');
+alert('this is version 2.9');
 /**
  * Setup the orchestra
  */
@@ -188,7 +188,7 @@ function handleChainChanged(_chainId) {
       console.log('Please connect to MetaMask.');
     } else if (accounts[0] !== currentAccount) {
       currentAccount = accounts[0];
-      // Do any other work!
+      fetchAccountData();
     }
   }
 
@@ -213,7 +213,7 @@ async function onConnect() {
 
     //Handle chain (network) and chainChanged (per EIP-1193)
     const chainId = await ethereum.request({ method: 'eth_chainId' });
-    //handleChainChanged(chainId);
+    handleChainChanged(chainId);
 
 
     //Handle user accounts and accountsChanged (per EIP-1193)
@@ -238,7 +238,7 @@ async function onConnect() {
             // If this happens, the user rejected the connection request.
             console.log('Please connect to MetaMask.');
           } else {
-            console.error(err);
+            console.error('Request was rejected');
           }
         });
   }
