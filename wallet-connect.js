@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 3.02');
+alert('this is version 3.03');
 /**
  * Setup the orchestra
  */
@@ -177,9 +177,9 @@ function handleChainChanged(_chainId) {
 //Handle the connection
   async function handleEthereum() {
 
-    provider = window;
-    if (provider && provider.isMetaMask) {
-      console.log('provider successfully detected!');
+    const { ethereum } = window;
+    if (ethereum && ethereum.isMetaMask) {
+      console.log('Ethereum successfully detected!');
       // Access the decentralized web!
     } else {
       console.log('Please install MetaMask!');
@@ -224,7 +224,7 @@ async function onConnect() {
 
     //Handle user accounts and accountsChanged (per EIP-1193)
     let currentAccount = null;
-    ethereum
+    provider
       .request({ method: 'eth_accounts' })
       .then(handleAccountsChanged)
       .catch((err) => {
@@ -235,7 +235,7 @@ async function onConnect() {
       });
 
 
-      ethereum
+      provider
         .request({ method: 'eth_requestAccounts' })
         .then(handleAccountsChanged)
         .catch((err) => {
