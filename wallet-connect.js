@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 2.97');
+alert('this is version 3.00');
 /**
  * Setup the orchestra
  */
@@ -57,6 +57,7 @@ function init() {
       options: {
         // Mikko's test key - don't copy as your mileage may vary
         infuraId: "8043bb2cf99347b1bfadfb233c5325c0",
+        //***REPLACE INFURA ID
       }
     },
 
@@ -86,7 +87,7 @@ function init() {
 async function fetchAccountData() {
 
   // Get a Web3 instance for the wallet
-  window.web3 = new Web3(provider);
+  const web3 = new Web3(provider);
 
 
   console.log("Web3 instance is", web3);
@@ -98,7 +99,7 @@ async function fetchAccountData() {
   document.querySelector("#network-name").textContent = chainData.name;
 
   // Get list of accounts of the connected wallet
-  const accounts = await ethereum.enable();
+  const accounts = await web3.eth.getAccounts();
 
   // MetaMask does not give you all accounts, only the selected account
   console.log("Got accounts", accounts);
@@ -165,13 +166,14 @@ async function refreshAccountData() {
 }
 
 
+//***METAMASK
 function handleChainChanged(_chainId) {
   // We recommend reloading the page, unless you must do otherwise
   window.location.reload();
   fetchAccountData();
 }
 
-
+//***METAMASK
 //Handle the connection
   async function handleEthereum() {
 
@@ -184,6 +186,7 @@ function handleChainChanged(_chainId) {
     }
   }
 
+//***METAMASK
   function handleAccountsChanged(accounts) {
     if (accounts.length === 0) {
       // MetaMask is locked or the user has not connected any accounts
@@ -197,6 +200,7 @@ function handleChainChanged(_chainId) {
 /**
  * Connect wallet button pressed.
  */
+ //***COMBINED
 async function onConnect() {
 
   // detects if connected through mobile browser
@@ -263,7 +267,7 @@ async function onConnect() {
     console.log("Opening a dialog", web3Modal);
     try {
       provider = await web3Modal.connect();
-      const web3 = new Web3(provider);
+      //const web3 = new Web3(provider);
       console.log("provider was set via web3Modal.");
     } catch(e) {
         console.log("Could not get a wallet connection", e);
@@ -273,22 +277,28 @@ async function onConnect() {
 
 
   // Subscribe to accounts change
-  provider.on('accountsChanged', handleAccountsChanged);
+  ethereum.on('accountsChanged', handleAccountsChanged);
   // provider.on("accountsChanged", (accounts) => {
   //   //alert('accountsChanged');
   //   fetchAccountData();
   // });
 
   // Subscribe to chainId change
-  provider.on('chainChanged', handleChainChanged);
+  ethereum.on('chainChanged', handleChainChanged);
   // provider.on("chainChanged", (chainId) => {
   //   // We recommend reloading the page unless you have good reason not to.
   //   //window.location.reload();
   //   fetchAccountData();
   // });
 
+//***DEPRICATED
+  // Subscribe to networkId change
+// provider.on("networkChanged", (networkId) => {
+//   fetchAccountData();
+// });
 
-  provider.on('disconnect', (code, reason) => {
+
+  ethereum.on('disconnect', (code, reason) => {
     console.error(`Ethereum Provider connection closed.`);
     fetchAccountData();
 });
