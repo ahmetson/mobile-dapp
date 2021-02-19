@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 2.95');
+alert('this is version 2.96');
 /**
  * Setup the orchestra
  */
@@ -70,7 +70,6 @@ function init() {
   };
 
   web3Modal = new Web3Modal({
-    network: "rinkeby",
     cacheProvider: true, // optional
     providerOptions, // required
     disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
