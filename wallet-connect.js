@@ -56,7 +56,7 @@ function init() {
       package: WalletConnectProvider,
       options: {
         // Mikko's test key - don't copy as your mileage may vary
-        infuraId: "8043bb2cf99347b1bfadfb233c5325c0",
+        infuraId: "a07ddfebd33a4161b915c09002291536",
         //***REPLACE INFURA ID
       }
     },
@@ -166,14 +166,14 @@ async function refreshAccountData() {
 }
 
 
-//***METAMASK
+//***METAMASK EIP1193
 function handleChainChanged(_chainId) {
   // We recommend reloading the page, unless you must do otherwise
   window.location.reload();
   fetchAccountData();
 }
 
-//***METAMASK
+//***METAMASK EIP1193
 //Handle the connection
   async function handleEthereum() {
 
@@ -186,7 +186,7 @@ function handleChainChanged(_chainId) {
     }
   }
 
-//***METAMASK
+//***METAMASK EIP1193
   function handleAccountsChanged(accounts) {
     if (accounts.length === 0) {
       // MetaMask is locked or the user has not connected any accounts
@@ -200,7 +200,7 @@ function handleChainChanged(_chainId) {
 /**
  * Connect wallet button pressed.
  */
- //***COMBINED
+ //***METAMASK EIP1193
 async function onConnect() {
 
   // detects if connected through mobile browser
@@ -249,7 +249,7 @@ async function onConnect() {
         });
   }
 
-
+//*** MAY BE DELETED ?
   else if(mobileBrowser){
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
@@ -261,6 +261,7 @@ async function onConnect() {
   //if agent is mobile, only metamask is supported currently
   alert('Please use dApp browser.');
   }
+  //***WEB3MODAL
   //if metamask is not connected and agent is not mobile
   else if(!mobileBrowser){
     //open web3Modal popup
@@ -277,19 +278,19 @@ async function onConnect() {
 
 
   // Subscribe to accounts change
-  ethereum.on('accountsChanged', handleAccountsChanged);
-  // provider.on("accountsChanged", (accounts) => {
-  //   //alert('accountsChanged');
-  //   fetchAccountData();
-  // });
+  // ethereum.on('accountsChanged', handleAccountsChanged);
+  provider.on("accountsChanged", (accounts) => {
+    //alert('accountsChanged');
+    fetchAccountData();
+  });
 
   // Subscribe to chainId change
-  ethereum.on('chainChanged', handleChainChanged);
-  // provider.on("chainChanged", (chainId) => {
-  //   // We recommend reloading the page unless you have good reason not to.
-  //   //window.location.reload();
-  //   fetchAccountData();
-  // });
+  // ethereum.on('chainChanged', handleChainChanged);
+  provider.on("chainChanged", (chainId) => {
+    // We recommend reloading the page unless you have good reason not to.
+    //window.location.reload();
+    fetchAccountData();
+  });
 
 //***DEPRICATED
   // Subscribe to networkId change
@@ -298,7 +299,7 @@ async function onConnect() {
 // });
 
 
-  ethereum.on('disconnect', (code, reason) => {
+  provider.on('disconnect', (code, reason) => {
     console.error(`Ethereum Provider connection closed.`);
     fetchAccountData();
 });
