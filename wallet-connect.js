@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 2.93');
+alert('this is version 2.94');
 /**
  * Setup the orchestra
  */
@@ -70,7 +70,8 @@ function init() {
   };
 
   web3Modal = new Web3Modal({
-    cacheProvider: false, // optional
+    network: "mainnet",
+    cacheProvider: true, // optional
     providerOptions, // required
     disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
   });
@@ -262,6 +263,7 @@ async function onConnect() {
     console.log("Opening a dialog", web3Modal);
     try {
       provider = await web3Modal.connect();
+      const web3 = new Web3(provider);
       console.log("provider was set via web3Modal.");
     } catch(e) {
         console.log("Could not get a wallet connection", e);
