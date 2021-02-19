@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 2.96');
+alert('this is version 2.97');
 /**
  * Setup the orchestra
  */
@@ -70,6 +70,7 @@ function init() {
   };
 
   web3Modal = new Web3Modal({
+    network: "mainnet",
     cacheProvider: true, // optional
     providerOptions, // required
     disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
@@ -272,14 +273,14 @@ async function onConnect() {
 
 
   // Subscribe to accounts change
-  ethereum.on('accountsChanged', handleAccountsChanged);
+  provider.on('accountsChanged', handleAccountsChanged);
   // provider.on("accountsChanged", (accounts) => {
   //   //alert('accountsChanged');
   //   fetchAccountData();
   // });
 
   // Subscribe to chainId change
-  ethereum.on('chainChanged', handleChainChanged);
+  provider.on('chainChanged', handleChainChanged);
   // provider.on("chainChanged", (chainId) => {
   //   // We recommend reloading the page unless you have good reason not to.
   //   //window.location.reload();
@@ -287,7 +288,7 @@ async function onConnect() {
   // });
 
 
-  ethereum.on('disconnect', (code, reason) => {
+  provider.on('disconnect', (code, reason) => {
     console.error(`Ethereum Provider connection closed.`);
     fetchAccountData();
 });
