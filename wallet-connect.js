@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 3.00');
+alert('this is version 3.01');
 /**
  * Setup the orchestra
  */
@@ -57,7 +57,7 @@ function init() {
       options: {
         // Mikko's test key - don't copy as your mileage may vary
         infuraId: "a07ddfebd33a4161b915c09002291536",
-        //***REPLACE INFURA ID
+        //***REPLACED INFURA ID
       }
     },
 
@@ -177,9 +177,9 @@ function handleChainChanged(_chainId) {
 //Handle the connection
   async function handleEthereum() {
 
-    const { ethereum } = window;
-    if (ethereum && ethereum.isMetaMask) {
-      console.log('Ethereum successfully detected!');
+    provider = window;
+    if (provider && provider.isMetaMask) {
+      console.log('provider successfully detected!');
       // Access the decentralized web!
     } else {
       console.log('Please install MetaMask!');
@@ -218,13 +218,13 @@ async function onConnect() {
 
 
     //Handle chain (network) and chainChanged (per EIP-1193)
-    const chainId = await ethereum.request({ method: 'eth_chainId' });
+    const chainId = await provider.request({ method: 'eth_chainId' });
     //handleChainChanged(chainId);
 
 
     //Handle user accounts and accountsChanged (per EIP-1193)
     let currentAccount = null;
-    ethereum
+    provider
       .request({ method: 'eth_accounts' })
       .then(handleAccountsChanged)
       .catch((err) => {
@@ -235,7 +235,7 @@ async function onConnect() {
       });
 
 
-      ethereum
+      provider
         .request({ method: 'eth_requestAccounts' })
         .then(handleAccountsChanged)
         .catch((err) => {
@@ -249,7 +249,7 @@ async function onConnect() {
         });
   }
 
-//*** MAY BE DELETED ?
+//***METAMASK, MAY BE DELETED ?
   else if(mobileBrowser){
     window.addEventListener('ethereum#initialized', handleEthereum, {
       once: true,
