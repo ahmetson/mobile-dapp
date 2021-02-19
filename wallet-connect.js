@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 3.01');
+alert('this is version 3.02');
 /**
  * Setup the orchestra
  */
@@ -224,7 +224,7 @@ async function onConnect() {
 
     //Handle user accounts and accountsChanged (per EIP-1193)
     let currentAccount = null;
-    provider
+    ethereum
       .request({ method: 'eth_accounts' })
       .then(handleAccountsChanged)
       .catch((err) => {
@@ -235,7 +235,7 @@ async function onConnect() {
       });
 
 
-      provider
+      ethereum
         .request({ method: 'eth_requestAccounts' })
         .then(handleAccountsChanged)
         .catch((err) => {
