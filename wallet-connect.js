@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 3.03');
+alert('this is version 3.1');
 /**
  * Setup the orchestra
  */
@@ -71,7 +71,6 @@ function init() {
   };
 
   web3Modal = new Web3Modal({
-    network: "mainnet",
     cacheProvider: true, // optional
     providerOptions, // required
     disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
@@ -103,11 +102,9 @@ async function fetchAccountData() {
 
   // MetaMask does not give you all accounts, only the selected account
   console.log("Got accounts", accounts);
-  selectedAccount = accounts[0];
+  window.selectedAccount = accounts[0];
 
-  //alert('selectedAccount: ' +selectedAccount);
-
-  document.querySelector("#selected-account").textContent = selectedAccount;
+  document.querySelector("#selected-account").textContent = window.selectedAccount;
 
   // Get a handl
   const template = document.querySelector("#template-balance");
@@ -268,7 +265,7 @@ async function onConnect() {
     console.log("Opening a dialog", web3Modal);
     try {
       provider = await web3Modal.connect();
-      //const web3 = new Web3(provider);
+      window.web3 = new Web3(provider);
       console.log("provider was set via web3Modal.");
     } catch(e) {
         console.log("Could not get a wallet connection", e);

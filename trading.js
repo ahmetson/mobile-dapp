@@ -11,10 +11,10 @@ const fee = 0.03;
 // uses uniswap sdk
 let calculateEthValue = async function(amountIn) {
     await printCwsBalance();
-    
+
     const fee = amountIn * 0.03;
     amountIn = web3.utils.toWei(amountIn.toString());
-    
+
     // note that you may want/need to handle this async code differently,
     // for example if top-level await is not an option
     const pair = await UNISWAP.Fetcher.fetchPairData(CWS, UNISWAP.WETH[CWS.chainId])
@@ -24,7 +24,7 @@ let calculateEthValue = async function(amountIn) {
     const trade = new UNISWAP.Trade(route, new UNISWAP.TokenAmount(UNISWAP.WETH[CWS.chainId], amountIn), UNISWAP.TradeType.EXACT_INPUT);
 
     const slippageTolerance = new UNISWAP.Percent('50', '10000') // 50 bips, or 0.50%
-    
+
     const amountOutMin = trade.minimumAmountOut(slippageTolerance).raw // needs to be converted to e.g. hex
     const amountOut = trade.outputAmount.raw // needs to be converted to e.g. hex
     const path = [UNISWAP.WETH[CWS.chainId].address, CWS.address]
@@ -48,12 +48,12 @@ let calculateEthValue = async function(amountIn) {
     return {out: amountOut, min: amountOutMin, value: value, path: path, deadline: deadline};
 };
 
-let calculateCwsValue = async function(amountIn) { 
+let calculateCwsValue = async function(amountIn) {
     await printCwsBalance();
 
-    const fee = amountIn * 0.03;    
+    const fee = amountIn * 0.03;
     amountIn = web3.utils.toWei(amountIn.toString());
-    
+
     // note that you may want/need to handle this async code differently,
     // for example if top-level await is not an option
     const pair = await UNISWAP.Fetcher.fetchPairData(CWS, UNISWAP.WETH[CWS.chainId])
@@ -73,11 +73,11 @@ let calculateCwsValue = async function(amountIn) {
     const value = trade.inputAmount.raw // // needs to be converted to e.g. hex
     const priceImpact = trade.priceImpact.toSignificant(6);
 
-    
+
     const actualCws = web3.utils.fromWei(value.toString());
     const actualEth = web3.utils.fromWei(amountOut.toString());
     const actualMin = web3.utils.fromWei(amountOutMin.toString());
-    
+
     console.log("For CWS: "+actualCws);
     console.log("Receive Eth: "+actualEth);
     console.log("1 CWS = "+(1/(actualCws)*actualEth) + " ETH");
@@ -85,7 +85,7 @@ let calculateCwsValue = async function(amountIn) {
     console.log("Minimum received: "+actualMin);
     console.log("Price Impact: "+priceImpact);
     console.log("Fee: "+fee+" ETH");
-    
+
     return {out: amountOut, min: amountOutMin, value: value, path: path, deadline: deadline};
 };
 
@@ -107,7 +107,7 @@ let initCws = async function() {
 
 let printCwsBalance = async function() {
     await initCws();
-    let cwsRaw = await cws.methods.balanceOf(web3.currentProvider.selectedAddress).call();
+    let cwsRaw = await cws.methods.balanceOf(window.selectedAccount).call();
     console.log("CWS balance: "+web3.utils.fromWei(cwsRaw));
 };
 
@@ -115,7 +115,7 @@ let swapEthToCws = async function(amount) {
     let swapData = await calculateEthValue(amount);
     await initRouter();
 
-    let account = web3.currentProvider.selectedAddress;
+    let account = window.selectedAccount;
     window.router.methods.swapExactETHForTokens(swapData.out.toString(), swapData.path, account, swapData.deadline)
 	.send({from: account, value: swapData.value.toString()})
 	    .on('transactionHash', function(hash){
@@ -134,8 +134,8 @@ let swapCwsToEth = async function(amount) {
     let swapData = await calculateCwsValue(amount);
     await initRouter();
 
-    let account = web3.currentProvider.selectedAddress;
-    
+    let account = window.selectedAccount;
+
     window.router.methods.swapExactTokensForETH(swapData.value.toString(), swapData.out.toString(), swapData.path, account, swapData.deadline)
 	.send({from: account})
 	    .on('transactionHash', function(hash){
@@ -193,21 +193,21 @@ field0.onblur = async function() {
 	const actualCws = web3.utils.fromWei(swapData.out.toString());
 
 	field1.value = actualCws;
-	
+
 	hint.innerHTML = "For Eth: "+actualEth + "<br>"+
-	    "Receive CWS: "+actualCws+"<br>"+	    
-	    "1 Eth = "+(1/(actualEth)*actualCws) + " CWS";	
+	    "Receive CWS: "+actualCws+"<br>"+
+	    "1 Eth = "+(1/(actualEth)*actualCws) + " CWS";
 
     } else {
 	let swapData = await calculateCwsValue(field0.value);
 	const actualCws = web3.utils.fromWei(swapData.value.toString());
         const actualEth = web3.utils.fromWei(swapData.out.toString());
-	
+
 	field1.value = actualEth;
-	
-	hint.innerHTML = "For CWS: "+actualCws+"<br>" +	
-            "Receive Eth: "+actualEth + "<br>"+	    
-	    "1 CWS = "+(1/(actualCws)*actualEth) + " ETH";	
+
+	hint.innerHTML = "For CWS: "+actualCws+"<br>" +
+            "Receive Eth: "+actualEth + "<br>"+
+	    "1 CWS = "+(1/(actualCws)*actualEth) + " ETH";
     }
 }.bind(this);
 
@@ -224,20 +224,20 @@ field1.onblur = async function() {
 	const actualCws = web3.utils.fromWei(swapData.out.toString());
 
 	field0.value = actualCws;
-	
+
 	hint.innerHTML = "For Eth: "+actualEth + "<br>"+
-	    "Receive CWS: "+actualCws+"<br>"+	    
-	    "1 Eth = "+(1/(actualEth)*actualCws) + " CWS";	
+	    "Receive CWS: "+actualCws+"<br>"+
+	    "1 Eth = "+(1/(actualEth)*actualCws) + " CWS";
 
     } else {
 	let swapData = await calculateCwsValue(field1.value);
 	const actualCws = web3.utils.fromWei(swapData.value.toString());
         const actualEth = web3.utils.fromWei(swapData.out.toString());
-	
+
 	field0.value = actualEth;
-	
-	hint.innerHTML = "For CWS: "+actualCws+"<br>" +	
-            "Receive Eth: "+actualEth + "<br>"+	    
-	    "1 CWS = "+(1/(actualCws)*actualEth) + " ETH";	
+
+	hint.innerHTML = "For CWS: "+actualCws+"<br>" +
+            "Receive Eth: "+actualEth + "<br>"+
+	    "1 CWS = "+(1/(actualCws)*actualEth) + " ETH";
     }
 }.bind(this);
