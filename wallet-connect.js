@@ -26,7 +26,7 @@ let accountContainer;
 
 
 
-alert('this is version 3.03');
+alert('this is version 3.031');
 /**
  * Setup the orchestra
  */
@@ -71,10 +71,7 @@ function init() {
   };
 
   web3Modal = new Web3Modal({
-    network: "mainnet",
-    cacheProvider: true, // optional
     providerOptions, // required
-    disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
   });
 
   console.log("Web3Modal instance is", web3Modal);
@@ -167,24 +164,24 @@ async function refreshAccountData() {
 
 
 //***METAMASK EIP1193
-function handleChainChanged(_chainId) {
-  // We recommend reloading the page, unless you must do otherwise
-  window.location.reload();
-  fetchAccountData();
-}
+// function handleChainChanged(_chainId) {
+//   // We recommend reloading the page, unless you must do otherwise
+//   window.location.reload();
+//   fetchAccountData();
+// }
 
 //***METAMASK EIP1193
 //Handle the connection
-  async function handleEthereum() {
-
-    const { ethereum } = window;
-    if (ethereum && ethereum.isMetaMask) {
-      console.log('Ethereum successfully detected!');
-      // Access the decentralized web!
-    } else {
-      console.log('Please install MetaMask!');
-    }
-  }
+  // async function handleEthereum() {
+  //
+  //   const { ethereum } = window;
+  //   if (ethereum && ethereum.isMetaMask) {
+  //     console.log('Ethereum successfully detected!');
+  //     // Access the decentralized web!
+  //   } else {
+  //     console.log('Please install MetaMask!');
+  //   }
+  // }
 
 //***METAMASK EIP1193
   function handleAccountsChanged(accounts) {
@@ -224,7 +221,7 @@ async function onConnect() {
 
     //Handle user accounts and accountsChanged (per EIP-1193)
     let currentAccount = null;
-    provider
+    ethereum
       .request({ method: 'eth_accounts' })
       .then(handleAccountsChanged)
       .catch((err) => {
@@ -235,7 +232,7 @@ async function onConnect() {
       });
 
 
-      provider
+      ethereum
         .request({ method: 'eth_requestAccounts' })
         .then(handleAccountsChanged)
         .catch((err) => {
@@ -250,17 +247,17 @@ async function onConnect() {
   }
 
 //***METAMASK, MAY BE DELETED ?
-  else if(mobileBrowser){
-    window.addEventListener('ethereum#initialized', handleEthereum, {
-      once: true,
-  });
-  // If the event is not dispatched by the end of the timeout,
-  // the user probably doesn't have MetaMask installed.
-  setTimeout(handleEthereum, 3000); // 3 seconds
-
-  //if agent is mobile, only metamask is supported currently
-  alert('Please use dApp browser.');
-  }
+  // else if(mobileBrowser){
+  //   window.addEventListener('ethereum#initialized', handleEthereum, {
+  //     once: true,
+  // });
+  // // If the event is not dispatched by the end of the timeout,
+  // // the user probably doesn't have MetaMask installed.
+  // setTimeout(handleEthereum, 3000); // 3 seconds
+  //
+  // //if agent is mobile, only metamask is supported currently
+  // alert('Please use dApp browser.');
+  // }
   //***WEB3MODAL
   //if metamask is not connected and agent is not mobile
   else if(!mobileBrowser){
