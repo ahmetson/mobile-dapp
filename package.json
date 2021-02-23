@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/blocklords/cws-swap#readme",
   "dependencies": {
+    "@binance-chain/bsc-connector": "^1.0.0",
     "@ethersproject/address": "^5.0.8",
     "@ethersproject/contracts": "^5.0.8",
     "@ethersproject/networks": "^5.0.6",
