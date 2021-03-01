@@ -24,6 +24,7 @@ let selectedAccount;
 
 let accountContainer;
 
+alert("This is version 4.10");
 
 /**
  * Setup the orchestra
@@ -55,7 +56,6 @@ function init() {
       options: {
         // Mikko's test key - don't copy as your mileage may vary
         infuraId: "a07ddfebd33a4161b915c09002291536",
-        //***REPLACED INFURA ID
       }
     },
 
@@ -80,7 +80,7 @@ function init() {
 /**
  * Kick in the UI action after Web3modal dialog has chosen a provider
  */
- //***this function should be for web3modal only, however parts of it should be used by other providers
+ //***this function is for web3modal only, however parts of it should be used by other providers
 async function fetchAccountData() {
 
   // Get a Web3 instance for the wallet
@@ -157,35 +157,22 @@ async function refreshAccountData() {
   // with Ethereum node via JSON-RPC and loads chain data
   // over an API call.
   document.querySelector("#btn-connect").setAttribute("disabled", "disabled")
-  //***following line may not work with bscWallet
+
   await fetchAccountData(provider);
   document.querySelector("#btn-connect").removeAttribute("disabled")
 }
 
 
-//***METAMASK & bscWallet EIP1193
+
 function handleChainChanged(_chainId) {
   window.location.reload();
 }
 
-//***METAMASK only EIP1193
-//***this function is not even called
-  async function handleEthereum() {
-
-    const { ethereum } = window;
-    if (ethereum && ethereum.isMetaMask) {
-      console.log('Ethereum successfully detected!');
-      // Access the decentralized web!
-    } else {
-      console.log('Please install MetaMask!');
-    }
-  }
 
 //***METAMASK EIP1193
   function handleAccountsChanged(accounts) {
     if (accounts.length === 0) {
       // MetaMask is locked or the user has not connected any accounts
-      //***edit comment bellow: Please connect to metamask or bscWallet
       console.log('Please connect to MetaMask.');
     } else if (accounts[0] !== currentAccount) {
       currentAccount = accounts[0];
@@ -194,20 +181,8 @@ function handleChainChanged(_chainId) {
 
       //***only for metamask
       //Handle user accounts and accountsChanged (per EIP-1193)
-      // let currentAccount = null;
-      // provider
-      //   .request({ method: 'eth_accounts' })
-      //   .then(handleAccountsChanged)
-      //   .catch((err) => {
-      //     // Some unexpected error.
-      //     // For backwards compatibility reasons, if no accounts are available,
-      //     // eth_accounts will return an empty array.
-      //     console.error(err);
-      //   });
-
-      //***only for bscWallet
-      let currentAccount = null;
-      BinanceChain
+      currentAccount = null;
+      ethereum
         .request({ method: 'eth_accounts' })
         .then(handleAccountsChanged)
         .catch((err) => {
@@ -217,24 +192,25 @@ function handleChainChanged(_chainId) {
           console.error(err);
         });
 
+
+
     }
   }
 
 /**
  * Connect wallet button pressed.
  */
- //***METAMASK EIP1193
 async function onConnect() {
 
   // detects if connected through mobile browser
   let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
   //reliably detect both the mobile and extension Metamask provider
-  //***only for Metamask
+  //metamask
   if (mobileBrowser && window.ethereum) {
 
     //Detect the MetaMask Ethereum provider
-    provider = await detectEthereumProvider()
+    provider = await detectEthereumProvider();
     //handleEthereum();
     if (provider !== window.ethereum) {
       console.error('Do you have multiple wallets installed?');
@@ -242,16 +218,13 @@ async function onConnect() {
 
 
     //Handle chain (network) and chainChanged (per EIP-1193)
-    let chainId = await provider.request({ method: 'eth_chainId' });
-    //handleChainChanged(chainId);
+    let chainId = await ethereum.request({ method: 'eth_chainId' });
 
-    //***only for bscWallet
-    //let chainId = BinanceChain.chainId;
 
 
     //Handle user accounts and accountsChanged (per EIP-1193)
     let currentAccount = null;
-    provider
+    ethereum
       .request({ method: 'eth_accounts' })
       .then(handleAccountsChanged)
       .catch((err) => {
@@ -262,18 +235,18 @@ async function onConnect() {
       });
 
 
-      provider
-        .request({ method: 'eth_requestAccounts' })
-        .then(handleAccountsChanged)
-        .catch((err) => {
-          if (err.code === 4001) {
-            // EIP-1193 userRejectedRequest error
-            // If this happens, the user rejected the connection request.
-            console.log('Please connect to MetaMask.');
-          } else {
-            console.error('Request was rejected');
-          }
-        });
+    ethereum
+      .request({ method: 'eth_requestAccounts' })
+      .then(handleAccountsChanged)
+      .catch((err) => {
+        if (err.code === 4001) {
+          // EIP-1193 userRejectedRequest error
+          // If this happens, the user rejected the connection request.
+          console.log('Please connect to MetaMask.');
+        } else {
+          console.error('Request was rejected');
+        }
+      });
   }
 
 //***METAMASK, MAY BE DELETED ?
@@ -288,40 +261,7 @@ async function onConnect() {
   // //if agent is mobile, only metamask is supported currently
   // alert('Please use dApp browser.');
   // }
-  else if(window.BinanceChain){
 
-    //***only for bscWallet
-    let chainId = BinanceChain.chainId;
-
-    //Handle user accounts and accountsChanged (per EIP-1193)
-    //***bscWallet only
-    BinanceChain
-      .request({ method: 'eth_accounts' })
-      .then(handleAccountsChanged)
-      .catch((err) => {
-        // Some unexpected error.
-        // For backwards compatibility reasons, if no accounts are available,
-        // eth_accounts will return an empty array.
-        console.error(err);
-      });
-
-      //***bscWallet only
-      BinanceChain
-        .request({ method: 'eth_requestAccounts' })
-        .then(handleAccountsChanged)
-        .catch((err) => {
-          if (err.code === 4001) {
-            // EIP-1193 userRejectedRequest error
-            // If this happens, the user rejected the connection request.
-            console.log('Please connect to MetaMask.');
-          } else {
-            console.error(err);
-          }
-        });
-
-
-
-  }
   //***WEB3MODAL
   //if metamask is not connected and agent is not mobile
   else if(!mobileBrowser){
@@ -338,70 +278,34 @@ async function onConnect() {
   }
 
 
-  // Subscribe to accounts change
-  // ethereum.on('accountsChanged', handleAccountsChanged);
+  //*** metamask
+
+  ethereum.on('accountsChanged', handleAccountsChanged);
+
+  ethereum.on('chainChanged', handleChainChanged);
+
+  ethereum.on('disconnect', (code, reason) => {
+    console.error(`Ethereum Provider connection closed.`);
+    fetchAccountData();
+  });
+
+
+  //*** web3Modal
+
   provider.on("accountsChanged", (accounts) => {
-    //if metamask/bscWallet, call following function
-    //handleAccountsChanged();
-    //***if web3 modal call function, may be needed by others
     fetchAccountData();
   });
 
-  //***only for bscWallet
-  BinanceChain.on('accountsChanged', handleAccountsChanged);
-
-
-  // Handle the new accounts, or lack thereof.
-  // "accounts" will always be an array, but it can be empty.
-
-
-
-
-  // Subscribe to chainId change
-  // ethereum.on('chainChanged', handleChainChanged);
-  //***comment out for metamask+bscWallet
-  // provider.on("chainChanged", (chainId) => {
-  //   // We recommend reloading the page unless you have good reason not to.
-  //   //window.location.reload();
-  //   fetchAccountData();
-  // });
-
-  //***only for bscWallet
-  BinanceChain.on("chainChanged", (chainId) => {
-    // We recommend reloading the page unless you have good reason not to.
-    //window.location.reload();
+  provider.on("chainChanged", (chainId) => {
     fetchAccountData();
   });
 
-
-  //*** duplicate, only for bscWallet, has window.reload
-  // BinanceChain.on('chainChanged', (chainId) => {
-  //   // Handle the new chain.
-  //   // Correctly handling chain changes can be complicated.
-  //   // We recommend reloading the page unless you have a very good reason not to.
-  //   window.location.reload();
-  // });
-
-  //***only for Metamask
-  // provider.on('disconnect', (code, reason) => {
-  //   console.error(`Ethereum Provider connection closed.`);
-  //   fetchAccountData();
-  // });
-
-  //***only for bscWallet, there is error
-  //BinanceChain.on('disconnect', handler: (error: ProviderRpcError) => void);
-
-
-//***DEPRICATED
-  // Subscribe to networkId change
-// provider.on("networkChanged", (networkId) => {
-//   fetchAccountData();
-// });
+  provider.on("networkChanged", (networkId) => {
+    fetchAccountData();
+  });
 
   await refreshAccountData();
 }
-
-
 
 /**
  * Disconnect wallet button pressed.
