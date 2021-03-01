@@ -24,7 +24,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert("This is version 4.10");
+alert("This is version 4.11");
 
 /**
  * Setup the orchestra
@@ -166,6 +166,7 @@ async function refreshAccountData() {
 
 function handleChainChanged(_chainId) {
   window.location.reload();
+  alert("ethereum chain changed!");
 }
 
 
@@ -193,7 +194,7 @@ function handleChainChanged(_chainId) {
         });
 
 
-
+        alert("accounts were changed!");
     }
   }
 
