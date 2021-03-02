@@ -24,7 +24,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert("This is version 4.11");
+alert("This is version 4.12");
 
 /**
  * Setup the orchestra
@@ -164,12 +164,6 @@ async function refreshAccountData() {
 
 
 
-function handleChainChanged(_chainId) {
-  window.location.reload();
-  alert("ethereum chain changed!");
-}
-
-
 //***METAMASK EIP1193
   function handleAccountsChanged(accounts) {
     if (accounts.length === 0) {
@@ -249,19 +243,6 @@ async function onConnect() {
       });
   }
 
-//***METAMASK, MAY BE DELETED ?
-  // else if(mobileBrowser){
-  //   window.addEventListener('ethereum#initialized', handleEthereum, {
-  //     once: true,
-  // });
-  // // If the event is not dispatched by the end of the timeout,
-  // // the user probably doesn't have MetaMask installed.
-  // setTimeout(handleEthereum, 3000); // 3 seconds
-  //
-  // //if agent is mobile, only metamask is supported currently
-  // alert('Please use dApp browser.');
-  // }
-
   //***WEB3MODAL
   //if metamask is not connected and agent is not mobile
   else if(!mobileBrowser){
@@ -278,16 +259,16 @@ async function onConnect() {
   }
 
 
-  //*** metamask
+  // *** metamask
 
-  // ethereum.on('accountsChanged', handleAccountsChanged);
-  //
-  // ethereum.on('chainChanged', handleChainChanged);
-  //
-  // ethereum.on('disconnect', (code, reason) => {
-  //   console.error(`Ethereum Provider connection closed.`);
-  //   fetchAccountData();
-  // });
+  ethereum.on('accountsChanged', handleAccountsChanged);
+
+  ethereum.on('chainChanged', handleChainChanged);
+
+  ethereum.on('disconnect', (code, reason) => {
+    console.error(`Ethereum Provider connection closed.`);
+    fetchAccountData();
+  });
 
 
   //*** web3Modal
