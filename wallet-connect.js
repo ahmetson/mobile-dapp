@@ -176,7 +176,7 @@ async function refreshAccountData() {
 
       //Handle user accounts and accountsChanged (per EIP-1193)
       currentAccount = null;
-      provider
+      ethereum
         .request({ method: 'eth_accounts' })
         .then(handleAccountsChanged)
         .catch((err) => {
@@ -214,7 +214,7 @@ async function onConnect() {
 
     //Handle user accounts and accountsChanged (per EIP-1193)
     let currentAccount = null;
-    provider
+    ethereum
       .request({ method: 'eth_accounts' })
       .then(handleAccountsChanged)
       .catch((err) => {
@@ -224,7 +224,7 @@ async function onConnect() {
         console.error(err);
       });
 
-    provider
+    ethereum
       .request({ method: 'eth_requestAccounts' })
       .then(handleAccountsChanged)
       .catch((err) => {
@@ -256,13 +256,19 @@ async function onConnect() {
 
   //*** web3Modal
 
-  provider.on("accountsChanged", (accounts) => {
-    fetchAccountData();
-  });
+  // provider.on("accountsChanged", (accounts) => {
+  //   fetchAccountData();
+  // });
+  //
+  // provider.on("chainChanged", (chainId) => {
+  //   fetchAccountData();
+  // });
 
-  provider.on("chainChanged", (chainId) => {
-    fetchAccountData();
-  });
+  // *** metamask
+
+  ethereum.on('accountsChanged', handleAccountsChanged);
+
+  ethereum.on('chainChanged', handleChainChanged);
 
 
   await refreshAccountData();
