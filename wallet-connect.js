@@ -24,7 +24,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert("This is version 4.14");
+alert("This is version 4.15");
 
 /**
  * Setup the orchestra
@@ -256,19 +256,19 @@ async function onConnect() {
 
   //*** web3Modal
 
-  // provider.on("accountsChanged", (accounts) => {
-  //   fetchAccountData();
-  // });
-  //
-  // provider.on("chainChanged", (chainId) => {
-  //   fetchAccountData();
-  // });
+  provider.on("accountsChanged", (accounts) => {
+    fetchAccountData();
+  });
+
+  provider.on("chainChanged", (chainId) => {
+    fetchAccountData();
+  });
 
   // *** metamask
 
-  ethereum.on('accountsChanged', handleAccountsChanged);
-
-  ethereum.on('chainChanged', handleChainChanged);
+  // ethereum.on('accountsChanged', handleAccountsChanged);
+  //
+  // ethereum.on('chainChanged', handleChainChanged);
 
 
   await refreshAccountData();
