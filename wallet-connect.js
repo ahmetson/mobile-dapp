@@ -178,9 +178,8 @@ function handleChainChanged(_chainId) {
     } else if (accounts[0] !== currentAccount) {
       currentAccount = accounts[0];
       //***only for web3Modal??
-      fetchAccountData();
+      //fetchAccountData();
 
-      //***only for metamask
       //Handle user accounts and accountsChanged (per EIP-1193)
       currentAccount = null;
       ethereum
@@ -194,7 +193,7 @@ function handleChainChanged(_chainId) {
         });
 
 
-        alert("accounts were changed!");
+
     }
   }
 
@@ -281,14 +280,14 @@ async function onConnect() {
 
   //*** metamask
 
-  ethereum.on('accountsChanged', handleAccountsChanged);
-
-  ethereum.on('chainChanged', handleChainChanged);
-
-  ethereum.on('disconnect', (code, reason) => {
-    console.error(`Ethereum Provider connection closed.`);
-    fetchAccountData();
-  });
+  // ethereum.on('accountsChanged', handleAccountsChanged);
+  //
+  // ethereum.on('chainChanged', handleChainChanged);
+  //
+  // ethereum.on('disconnect', (code, reason) => {
+  //   console.error(`Ethereum Provider connection closed.`);
+  //   fetchAccountData();
+  // });
 
 
   //*** web3Modal
@@ -301,9 +300,6 @@ async function onConnect() {
     fetchAccountData();
   });
 
-  provider.on("networkChanged", (networkId) => {
-    fetchAccountData();
-  });
 
   await refreshAccountData();
 }
