@@ -24,7 +24,7 @@ let selectedAccount;
 
 let accountContainer;
 
-alert("This is version 4.12");
+alert("This is version 4.13");
 
 /**
  * Setup the orchestra
@@ -176,7 +176,7 @@ async function refreshAccountData() {
 
       //Handle user accounts and accountsChanged (per EIP-1193)
       currentAccount = null;
-      ethereum
+      provider
         .request({ method: 'eth_accounts' })
         .then(handleAccountsChanged)
         .catch((err) => {
@@ -200,7 +200,6 @@ async function onConnect() {
   let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
   //reliably detect both the mobile and extension Metamask provider
-  //metamask
   if (mobileBrowser && window.ethereum) {
 
     //Detect the MetaMask Ethereum provider
@@ -210,15 +209,12 @@ async function onConnect() {
       console.error('Do you have multiple wallets installed?');
     }
 
-
     //Handle chain (network) and chainChanged (per EIP-1193)
     let chainId = await ethereum.request({ method: 'eth_chainId' });
 
-
-
     //Handle user accounts and accountsChanged (per EIP-1193)
     let currentAccount = null;
-    ethereum
+    provider
       .request({ method: 'eth_accounts' })
       .then(handleAccountsChanged)
       .catch((err) => {
@@ -228,8 +224,7 @@ async function onConnect() {
         console.error(err);
       });
 
-
-    ethereum
+    provider
       .request({ method: 'eth_requestAccounts' })
       .then(handleAccountsChanged)
       .catch((err) => {
@@ -259,18 +254,6 @@ async function onConnect() {
   }
 
 
-  // *** metamask
-
-  ethereum.on('accountsChanged', handleAccountsChanged);
-
-  ethereum.on('chainChanged', handleChainChanged);
-
-  ethereum.on('disconnect', (code, reason) => {
-    console.error(`Ethereum Provider connection closed.`);
-    fetchAccountData();
-  });
-
-
   //*** web3Modal
 
   provider.on("accountsChanged", (accounts) => {
@@ -284,6 +267,8 @@ async function onConnect() {
 
   await refreshAccountData();
 }
+
+
 
 /**
  * Disconnect wallet button pressed.
