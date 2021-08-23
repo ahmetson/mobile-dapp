@@ -1,38 +1,37 @@
 {
   "name": "cws-swap",
   "version": "1.0.0",
-  "description": "A simple page to show swapping CWS-ETH in uniswap after web3modal",
+  "description": "A website to upload data",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/blocklords/cws-swap.git"
+    "url": "git+https://github.com/dandelionlabs-io/polkafantasy-interface.git"
   },
   "keywords": [
-    "uniswap",
     "seascape",
     "blocklords",
     "web3modal",
     "cws",
     "crowns",
-    "ahmetson"
+    "ahmetson",
+    "polkafantasy"
   ],
   "author": "Medet Ahmetson <admin@blocklords.io>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/blocklords/cws-swap/issues"
+    "url": "https://github.com/dandelionlabs-io/polkafantasy-interface/issues"
   },
-  "homepage": "https://github.com/blocklords/cws-swap#readme",
-  "dependencies": {
-    "@binance-chain/bsc-connector": "^1.0.0",
+  "homepage": "https://github.com/dandelionlabs-io/polkafantasy-interface#readme",
+  "devDependencies": {
     "@ethersproject/address": "^5.0.8",
     "@ethersproject/contracts": "^5.0.8",
     "@ethersproject/networks": "^5.0.6",
     "@ethersproject/providers": "^5.0.17",
     "@ethersproject/solidity": "^5.0.7",
-    "@uniswap/sdk": "^3.0.3",
     "express": "^4.17.1",
     "https-localhost": "^4.6.3"
   }
