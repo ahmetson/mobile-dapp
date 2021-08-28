@@ -11,3 +11,14 @@
     font-size: 1.5em;
     margin-top: 4em;
 }
+
+#btn-connect, #btn-disconnect {
+    margin-top: 10px;
+}
+#nav h4 {
+    margin-top: 15px;
+}
+
+#nav {
+    padding: 15px 0px;
+}

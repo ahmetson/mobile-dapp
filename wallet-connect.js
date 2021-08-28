@@ -1,9 +1,8 @@
 "use strict";
 
 /**
- * Example JavaScript code that interacts with the page and Web3 wallets
+ * PolkaFantasy interface
  */
-
 
  // Unpkg imports
 const Web3Modal = window.Web3Modal.default;
@@ -24,18 +23,10 @@ let selectedAccount;
 
 let accountContainer;
 
-alert("This is version 4.15");
-
 /**
  * Setup the orchestra
  */
 function init() {
-
-
-  console.log("Initializing example");
-  console.log("WalletConnectProvider is", WalletConnectProvider);
-  console.log("Fortmatic is", Fortmatic);
-  console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
 
   // Check that the web page is run in a secure context,
   // as otherwise MetaMask won't be available
@@ -72,8 +63,6 @@ function init() {
     providerOptions, // required
     disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
   });
-
-  console.log("Web3Modal instance is", web3Modal);
 }
 
 
@@ -85,9 +74,6 @@ async function fetchAccountData() {
 
   // Get a Web3 instance for the wallet
   const web3 = new Web3(provider);
-
-
-  console.log("Web3 instance is", web3);
 
   // Get connected chain id from Ethereum node
   const chainId = await web3.eth.getChainId();
@@ -131,8 +117,11 @@ async function fetchAccountData() {
   await Promise.all(rowResolvers);
 
   // Display fully loaded UI for wallet data
-  document.querySelector("#prepare").style.display = "none";
   document.querySelector("#connected").style.display = "block";
+  document.querySelector("#disconnected").style.display = "none";
+
+  document.querySelector("#btn-connect").style.display = "none";
+  document.querySelector("#btn-disconnect").style.display = "block";
 }
 
 
@@ -150,7 +139,6 @@ async function refreshAccountData() {
   // the user is switching acounts in the wallet
   // immediate hide this data
   document.querySelector("#connected").style.display = "none";
-  document.querySelector("#prepare").style.display = "block";
 
   // Disable button while UI is loading.
   // fetchAccountData() will take a while as it communicates
@@ -185,9 +173,6 @@ async function refreshAccountData() {
           // eth_accounts will return an empty array.
           console.error(err);
         });
-
-
-
     }
   }
 
@@ -195,7 +180,6 @@ async function refreshAccountData() {
  * Connect wallet button pressed.
  */
 async function onConnect() {
-
   // detects if connected through mobile browser
   let mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -242,11 +226,9 @@ async function onConnect() {
   //if metamask is not connected and agent is not mobile
   else if(!mobileBrowser){
     //open web3Modal popup
-    console.log("Opening a dialog", web3Modal);
     try {
       provider = await web3Modal.connect();
       window.web3 = new Web3(provider);
-      console.log("provider was set via web3Modal.");
     } catch(e) {
         console.log("Could not get a wallet connection", e);
         return;
@@ -281,8 +263,6 @@ async function onConnect() {
  */
 async function onDisconnect() {
 
-  console.log("Killing the wallet connection", provider);
-
   // TODO: Which providers have close method?
   if(provider.close) {
     await provider.close();
@@ -298,8 +278,11 @@ async function onDisconnect() {
   selectedAccount = null;
 
   // Set the UI back to the initial state
-  document.querySelector("#prepare").style.display = "block";
+  document.querySelector("#disconnected").style.display = "block";
   document.querySelector("#connected").style.display = "none";
+
+  document.querySelector("#btn-connect").style.display = "none";
+  document.querySelector("#btn-disconnect").style.display = "block";
 }
 
 
