@@ -114,17 +114,91 @@
           <p>Lock end time: <span id="poolInfoEndTime">17/03/2022  00:00 UTC</span>
         </div>
       </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <h1 class="h2">Add Investors</h1>
+        <p class="text-muted">Showing the list of investors.</p>
+      </div>
+      <div class="col-md-12">
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="csv-file">Open .CSV</label>
+          <input type="file" class="form-control" id="csv-file" name="files-csv" accept=".csv">
+        </div>
+      </div>
+
+    </div>
+    <div class="row mb-5">
+      <div class="col-md-12">
+        <div id="grid"></div>
+      </div>
     </div>
 
-    <!-- We use simple <template> templating for the example -->
-    <div id="templates" style="display: none">
-      <template id="template-balance">
-        <tr>
-          <th class="address"></th>
-          <td class="balance"></td>
-        </tr>
-      </template>
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p>Total Amount into Vesting contract: <strong><span id="total-pool-amount"></span></strong> Polka</p>
+      </div>
     </div>
+
+    <div class="row mb-5">
+      <div class="col-md-6 text-end">
+        <button type="button" class="btn btn-primary">Approve</button>
+      </div>
+      <div class="col-md-6 text-start">
+        <button type="button" class="btn btn-success" disabled>Add</button>
+      </div>
+    </div>
+    
+  </div>
+
+  <!-- Modal about incorrect CSV -->
+  <div class="modal fade " id="invalid-csv-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content alert alert-warning" role="alert">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Invalid CSV</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">  
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <p>Error: <strong><span id="invalid-csv-message"></span></strong></p>
+                <p>Valid .csv should be in the following format:</p>
+              </div>
+              <div class="col-md-12 table-responsive">
+                <table class="table table-bordered table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col">investor</th>
+                      <th scope="col">amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">0x5bDed8f6BdAE766C361EDaE25c5DC966BCaF8f43</th>
+                      <td>12.23222</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">0xf58Ad9E329F83B43Ba1e41AA8BbCF14CD615a951</th>
+                      <td>555.122</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">0x19813A833e37F44Ff943D8908f016948c7c3A12c</th>
+                      <td>12</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
     <!--
 
@@ -158,5 +232,156 @@
     <!-- This is a sample script to swap data -->
     <script type="text/javascript" src="./trading.js"></script>
     <script type="text/javascript" src="./dai_trading.js"></script>
+
+    <!-- DataGridXL -->
+    <script src="https://code.datagridxl.com/datagridxl.js"></script>
+    <!-- Papa Parse (to import and parse CSV files) -->
+    <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
+
+    <script>
+      var csvFile = document.getElementById("csv-file");
+
+      let defaultData = DataGridXL.createEmptyData(5,2);
+
+      // create empty grid
+      window.grid = new DataGridXL("grid", {
+        data: defaultData,
+        columns: [{
+          title: "investor",
+          source: "investor"
+        }, {
+          title: "amount",
+          source: "amount"
+        }]
+      });
+
+      // Popup to show if CSV is invalid
+      var invalidCsvModal = new bootstrap.Modal(document.getElementById('invalid-csv-modal'), {
+        keyboard: false
+      })
+
+      csvFile.onchange = function(e){
+        var file = e.target.files[0];
+
+          Papa.parse(file, {
+            header: true,
+            dynamicTyping: true,
+            complete: function(results) {
+              // this should clear all that's inside "grid" dom node...
+              window.grid.setData(defaultData);
+              
+              if (web3.utils == undefined) {
+                let errorMessage = "Connect your wallet first!";
+
+                printInvalidCsvMessage(errorMessage);
+                invalidCsvModal.show();
+
+                csvFile.value = ""
+              } else if (results.errors.length > 0) {
+                let errorMessage = results.errors[0].message;
+
+                printInvalidCsvMessage(errorMessage);
+                invalidCsvModal.show();
+
+                csvFile.value = ""
+              } else {
+                let validation = validateCsv(results.data);
+
+                if (validation === true) {
+                  window.grid.setData(results.data);
+
+                  printTotalPool();
+                } else {
+                  printInvalidCsvMessage(validation)
+                  invalidCsvModal.show();
+                  csvFile.value = ""
+                }
+              }
+            }
+          });
+
+      }
+
+      /**
+       * Calculate total amount of tokens that manager should add into contract
+       * 
+       * We assume that data was validated by validateCsv() function.
+       */
+      function calculateTotalPool(data) {
+        let totalPool = 0;
+
+        for (var i = 0; i < data.length; i++ ) {
+          let row = data[i];
+
+          let amount = parseFloat(row.amount);
+
+          if (!isNaN(amount)) {
+            totalPool += amount;
+          }
+        }
+
+        return totalPool;
+      }
+
+      /**
+       *  Checks whether the given CSV parsed by PapaParse.js is valid CSV or not.
+       * 
+       *  Valid CSV format:
+       * investor,amount
+       * <address>,<float> 
+       */
+      function validateCsv(data) {
+        if (!Array.isArray(data)) {
+          return "No CSV array was passed";
+        }
+
+        if (data.length == 0) {
+          return "Empty CSV";
+        }
+
+        if (data.length > 100) {
+          return "Can add maximum 100 investors per transaction. Amount of investors given: "+data.length;
+        }
+
+        let firstRow = data[0];
+
+        let keys = Object.keys(firstRow);
+        if (keys.length != 2) {
+          return "Expected 2 columns (investor, amount) to be given. CSV has "+keys.length+" columns";
+        }
+
+        for (var i = 0; i < data.length; i++ ) {
+          let row = data[i];
+
+          if (row.investor == undefined) {
+            return `Row is missing 'investor' column at row: ${i + 1}`;
+          }
+
+          if (row.amount == undefined) {
+            return `Row is missing 'amount' column at row: ${i + 1}`;
+          }
+
+          if (!web3.utils.isAddress(row.investor)) {
+            return `Incorrect 'investor' value at row: ${i + 1}. Address ${row.investor} is wrong!`;
+          }
+
+          if (isNaN(parseFloat(row.amount))) {
+            return `Incorrect 'amount' value at row: ${i + 1}. Address ${row.amount} is wrong!`;
+          }
+        }
+
+        return true;
+      }
+
+      function printInvalidCsvMessage(message) {
+        document.querySelector("#invalid-csv-message").textContent = message;
+      }
+
+      function printTotalPool() {
+        let totalPool = calculateTotalPool(window.grid.getData());
+
+        document.querySelector("#total-pool-amount").textContent = totalPool;
+      }
+    </script>
   </body>
 </html>
