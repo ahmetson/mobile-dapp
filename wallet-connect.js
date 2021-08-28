@@ -281,8 +281,8 @@ async function onDisconnect() {
   document.querySelector("#disconnected").style.display = "block";
   document.querySelector("#connected").style.display = "none";
 
-  document.querySelector("#btn-connect").style.display = "none";
-  document.querySelector("#btn-disconnect").style.display = "block";
+  document.querySelector("#btn-connect").style.display = "block";
+  document.querySelector("#btn-disconnect").style.display = "none";
 }
 
 
