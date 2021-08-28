@@ -136,7 +136,7 @@
 
     <div class="row">
       <div class="col-md-12 text-center">
-        <p>Total Amount into Vesting contract: <strong><span id="total-pool-amount"></span></strong> Polka</p>
+        <p>Total Amount into Vesting contract: <strong><span id="total-pool-amount">0.0</span></strong> Polka</p>
       </div>
     </div>
 
@@ -269,7 +269,8 @@
             complete: function(results) {
               // this should clear all that's inside "grid" dom node...
               window.grid.setData(defaultData);
-              
+              printTotalPool();
+
               if (web3.utils == undefined) {
                 let errorMessage = "Connect your wallet first!";
 
