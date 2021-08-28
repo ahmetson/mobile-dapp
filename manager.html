@@ -142,10 +142,10 @@
 
     <div class="row mb-5">
       <div class="col-md-6 text-end">
-        <button type="button" class="btn btn-primary">Approve</button>
+        <button type="button" class="btn btn-primary" id="btn-approve">Approve</button>
       </div>
       <div class="col-md-6 text-start">
-        <button type="button" class="btn btn-success" disabled>Add</button>
+        <button type="button" class="btn btn-success" id="btn-add" disabled>Add</button>
       </div>
     </div>
     
@@ -163,7 +163,6 @@
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-12">
-                <p>Error</p> 
                 <p id="error-message"></p>
               </div>
             </div>
@@ -225,6 +224,18 @@
     </div>
   </div>
 
+  <!-- Transaction status -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto" id="toast-title"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ...
+      </div>
+    </div>
+  </div>
     <!--
 
       Use unpkg CDN to load all NPM packages to vanilla Javascript - read more at http://unpkg.com
@@ -299,14 +310,12 @@
                 let errorMessage = "Connect your wallet first!";
 
                 printInvalidCsvMessage(errorMessage);
-                invalidCsvModal.show();
 
                 csvFile.value = ""
               } else if (results.errors.length > 0) {
                 let errorMessage = results.errors[0].message;
 
                 printInvalidCsvMessage(errorMessage);
-                invalidCsvModal.show();
 
                 csvFile.value = ""
               } else {
@@ -318,7 +327,6 @@
                   printTotalPool();
                 } else {
                   printInvalidCsvMessage(validation)
-                  invalidCsvModal.show();
                   csvFile.value = ""
                 }
               }
@@ -400,13 +408,177 @@
 
       function printInvalidCsvMessage(message) {
         document.querySelector("#invalid-csv-message").textContent = message;
+        invalidCsvModal.show();
       }
 
       function printTotalPool() {
-        let totalPool = calculateTotalPool(window.grid.getData());
+        window.totalPool = calculateTotalPool(window.grid.getData());
 
         document.querySelector("#total-pool-amount").textContent = totalPool;
       }
+    
+      window.addEventListener('load', async () => {
+        document.querySelector("#btn-approve").addEventListener("click", onApprove);
+        document.querySelector("#btn-add").addEventListener("click", onAdd);
+
+        let toastEl = document.querySelector("#toast");
+        window.toast = new bootstrap.Toast(toastEl);
+      });
+
+      /**
+       * On approve wallet button pressed.
+       */
+      async function onApprove() {
+        if (window.totalPool === undefined || window.totalPool == 0) {
+          printErrorMessage("No investor list to approve. Please upload CSV");
+          return;
+        }
+
+        if (!web3) {
+          printErrorMessage("No web3 library. Please check your internet connection");
+          return;
+        }
+
+        if (!web3.eth) {
+          printErrorMessage("Please connect your wallet!");
+          return;
+        }
+
+        if (!window.vesting) {
+          printErrorMessage("Please select a pool");
+          return;
+        }
+
+        let owner = await vesting.methods.owner().call({from: window.selectedAccount});
+        if (owner.toLowerCase() != window.selectedAccount.toLowerCase()) {
+          printErrorMessage(`Allowed address: ${owner} not matching your account ${window.selectedAccount}`);
+          return;
+        }
+
+        window.polka.methods.approve(vesting._address, web3.utils.toWei(totalPool.toString(), "ether"))
+        .send({from: window.selectedAccount})
+        .on('transactionHash', function(hash){
+          document.querySelector("#toast-title").textContent = "Wait Approve...";
+          document.querySelector(".toast-body").innerHTML = `See TX on
+            <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
+          `;
+
+          toast.show();
+
+          document.querySelector("#btn-add").setAttribute("disabled", "");
+        })
+        .on('receipt', function(receipt){
+          toast.hide();
+
+          document.querySelector("#toast-title").textContent = "Approve confirmed!";
+          document.querySelector(".toast-body").innerHTML = `See TX on
+            <a href="https://rinkeby.etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
+
+            Now, you can click on <i>Add</i> button.
+          `;
+
+          toast.show();
+
+          document.querySelector("#btn-approve").setAttribute("disabled", "");
+          document.querySelector("#btn-add").removeAttribute("disabled");
+        })
+        .on('error', function(error, receipt) { // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+          printErrorMessage(error.message);
+          console.error(error.message);
+
+          document.querySelector("#btn-add").removeAttribute("disabled", "");
+        });
+      }
+
+      /**
+       * On add wallet button pressed.
+       */
+       async function onAdd() {
+        if (window.grid === undefined) {
+          printErrorMessage("No CSV list to approve. Please upload CSV");
+          return;
+        }
+
+        let data = window.grid.getData();
+        if (data.length == 0) {
+          printErrorMessage("Empty CSV. Please upload investor list to add");
+          return;
+        }
+
+        if (Array.isArray(window.grid.getData()[0])) {
+          printErrorMessage("Empty CSV. Please upload investor list to add");
+          return;
+        }
+
+        if (!web3) {
+          printErrorMessage("No web3 library. Please check your internet connection");
+          return;
+        }
+
+        if (!web3.eth) {
+          printErrorMessage("Please connect your wallet!");
+          return;
+        }
+
+        if (!window.vesting) {
+          printErrorMessage("Please select a pool");
+          return;
+        }
+
+        let owner = await vesting.methods.owner().call({from: window.selectedAccount});
+        if (owner.toLowerCase() != window.selectedAccount.toLowerCase()) {
+          printErrorMessage(`Vesting manager ${owner} not matching your account ${window.selectedAccount}`);
+          return;
+        }
+
+        // Parameters to pass to smartcontract
+        let grantAmount = data.length;
+        let investors = data.flatMap((row) => {
+            return row.investor
+        });
+        let amounts = data.flatMap((row) => {
+            return web3.utils.toWei(row.amount.toString(), "ether")
+        });
+
+        window.vesting.methods.addTokenGrants(grantAmount, investors, amounts)
+        .send({from: window.selectedAccount})
+        .on('transactionHash', function(hash){
+          document.querySelector("#toast-title").textContent = "Wait Investor Addition...";
+          document.querySelector(".toast-body").innerHTML = `See TX on
+            <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
+          `;
+
+          toast.show();
+
+          document.querySelector("#btn-add").removeAttribute("disabled");
+        })
+        .on('receipt', function(receipt){
+          toast.hide();
+
+          document.querySelector("#toast-title").textContent = "Investors were added!";
+          document.querySelector(".toast-body").innerHTML = `See TX on
+            <a href="https://rinkeby.etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
+          `;
+
+          toast.show();
+
+          document.querySelector("#btn-approve").removeAttribute("disabled");
+          document.querySelector("#btn-add").setAttribute("disabled", "");
+
+          csvFile.value = ""
+          totalPool = 0;
+          printTotalPool();
+          showPoolInfo();
+          showPolkaBalance();
+          window.grid.setData(defaultData);
+        })
+        .on('error', function(error, receipt) { // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+          printErrorMessage(error.message);
+          console.error(error.message);
+
+          document.querySelector("#btn-add").removeAttribute("disabled", "");
+        });
+       }
     </script>
   </body>
 </html>

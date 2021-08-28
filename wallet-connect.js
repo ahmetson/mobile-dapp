@@ -110,12 +110,12 @@ async function fetchAccountData() {
   await showPolkaToken();
 }
 
-function printErrorMessage(message) {
+window.printErrorMessage = function(message) {
   document.querySelector("#error-message").textContent = message;
   window.errorModal.show();
 }
 
-async function showPolkaToken() {
+window.showPolkaToken = async function() {
   try {
     window.polka = await getContract("polka");
   } catch (e) {
@@ -130,7 +130,7 @@ async function showPolkaToken() {
   document.querySelector("#polka-balance").textContent = humanFriendlyBalance;
 }
 
-async function showPoolInfo() {
+window.showPoolInfo = async function() {
   if (window.selectedPool == undefined) {
     return;
   }
@@ -322,6 +322,7 @@ window.addEventListener('load', async () => {
   init();
   document.querySelector("#btn-connect").addEventListener("click", onConnect);
   document.querySelector("#btn-disconnect").addEventListener("click", onDisconnect);
+
   document.querySelector('#pool-selection').addEventListener('click', ({target}) => {
     if (target.getAttribute('name') === 'pool') { // check if user clicks right element
       window.selectedPool = target.id;
