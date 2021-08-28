@@ -83,41 +83,19 @@ async function fetchAccountData() {
 
   // Get list of accounts of the connected wallet
   const accounts = await web3.eth.getAccounts();
-
   // MetaMask does not give you all accounts, only the selected account
-  console.log("Got accounts", accounts);
   window.selectedAccount = accounts[0];
 
-  document.querySelector("#selected-account").textContent = window.selectedAccount;
+  document.querySelector("#selected-account").textContent = window.selectedAccount.substring(0, 10) + "..." + window.selectedAccount.substring(36);
 
-  // Get a handl
-  const template = document.querySelector("#template-balance");
-  accountContainer = document.querySelector("#accounts");
+  const balance = await web3.eth.getBalance(window.selectedAccount);
+  const ethBalance = web3.utils.fromWei(balance, "ether");
+  const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
 
-  // Purge UI elements any previously loaded accounts
-  accountContainer.innerHTML = '';
-
-  // Go through all accounts and get their ETH balance
-  const rowResolvers = accounts.map(async (address) => {
-    const balance = await web3.eth.getBalance(address);
-    // ethBalance is a BigNumber instance
-    // https://github.com/indutny/bn.js/
-    const ethBalance = web3.utils.fromWei(balance, "ether");
-    const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
-    // Fill in the templated row and put in the document
-    const clone = template.content.cloneNode(true);
-    clone.querySelector(".address").textContent = address;
-    clone.querySelector(".balance").textContent = humanFriendlyBalance;
-    accountContainer.appendChild(clone);
-  });
-
-  // Because rendering account does its own RPC commucation
-  // with Ethereum node, we do not want to display any results
-  // until data for all accounts is loaded
-  await Promise.all(rowResolvers);
+  document.querySelector("#eth-balance").textContent = humanFriendlyBalance;
 
   // Display fully loaded UI for wallet data
-  document.querySelector("#connected").style.display = "block";
+  document.querySelector("#connected").style.display = "flex";
   document.querySelector("#disconnected").style.display = "none";
 
   document.querySelector("#btn-connect").style.display = "none";
@@ -278,7 +256,7 @@ async function onDisconnect() {
   selectedAccount = null;
 
   // Set the UI back to the initial state
-  document.querySelector("#disconnected").style.display = "block";
+  document.querySelector("#disconnected").style.display = "flex";
   document.querySelector("#connected").style.display = "none";
 
   document.querySelector("#btn-connect").style.display = "block";

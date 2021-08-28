@@ -44,37 +44,76 @@
           </div>
         </div>
       </div>
-      <div class="row mt-4" id="connected" style="display: none;">
-        <div class="col-md-12"  >
-            <div id="network">
-              <p>
-                <strong>Connected blockchain:</strong> <span id="network-name"></span>
-              </p>
-
-              <p>
-                <strong>Selected account:</strong> <span id="selected-account"></span>
-              </p>
-
-            </div>
-
-            <hr>
-
-            <h3>All account balances</h3>
-
-            <table class="table table-listing">
-              <thead>
-                <th>Address</th>
-                <th>ETH balance</th>
-              </thead>
-
-              <tbody id="accounts">
-              </tbody>
-            </table>
-
-            <p>Please try to switch between different accounts in your wallet if your wallet supports this functonality.</p>
+      <div class="row mt-4 mb-4" id="connected" style="display: none;">
+        <div class="col-8" >
+            Blockchain: <strong><span id="network-name"></span></strong>
+        </div>
+        <div class="col-4 text-end">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-primary">
+              Account
+              <strong><span class="badge bg-primary rounded-pill" id="selected-account"></span></strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              ETH balance:
+              <span class="badge bg-primary rounded-pill" id="eth-balance">0</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              POLKA balance:
+              <span class="badge bg-primary rounded-pill" id="polka-balance">0</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Pools -->
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <h1 class="h2">Select the pool</h1>
+          <p class="text-muted">Working with pool requires wallet connection.</p>
+        </div>
+        <div class=" col-md-3 form-check text-start">
+          <input type="radio" class="btn-check" id="poolPrivateSale" name="pool" checked>
+          <label class="btn btn-outline-primary" for="poolPrivateSale">Private Sale</label><br>
+        </div>
+        <div class=" col-md-3 form-check text-center">
+          <input type="radio" class="btn-check" id="poolChainGuardian" name="pool">
+          <label class="btn btn-outline-primary" for="poolChainGuardian">ChainGuardian</label><br>
+        </div>
+        <div class=" col-md-3 form-check text-center">
+          <input type="radio" class="btn-check" id="poolTrustedPad" name="pool">
+          <label class="btn btn-outline-primary" for="poolTrustedPad">TrustPad</label><br>
+        </div>
+        <div class=" col-md-3 form-check text-end">
+          <input type="radio" class="btn-check" id="poolLiquidityLock" name="pool">
+          <label class="btn btn-outline-primary" for="poolLiquidityLock">Liquidity Lock</label><br>
         </div>
       </div>
 
+      <!-- Pool Info -->
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <h1 class="h2"><span id="poolInfoName">Private Sale</span> pool info</h1>
+          <p class="text-muted">Showing the pool info requires wallet connection.</p>
+        </div>
+        <div class="col-md-6">
+          <p>Contract Address: <span id="poolInfoContract">0x5bDed8f6BdAE766C361EDaE25c5DC966BCaF8f43</span></p>
+        </div>
+        <div class="col-md-6">
+          <p>Total pool size: <span id="poolInfoSize">1000 Polka</span>
+        </div>
+        <div class="col-md-6">
+          <p>Remained: <span id="poolInfoRemained">123 Polka</span>
+        </div>
+        <div class="col-md-6">
+          <p>Claimed: <span id="poolInfoClaimed">756 Polka</span>
+        </div>
+        <div class="col-md-6">
+          <p>Lock start time: <span id="poolInfoStartTime">17/08/2021  00:00 UTC</span>
+        </div>
+        <div class="col-md-6">
+          <p>Lock end time: <span id="poolInfoEndTime">17/03/2022  00:00 UTC</span>
+        </div>
+      </div>
     </div>
 
     <!-- We use simple <template> templating for the example -->
