@@ -27,6 +27,10 @@ let accountContainer;
  * Setup the orchestra
  */
 function init() {
+  // Popup to show if CSV is invalid
+  window.errorModal = new bootstrap.Modal(document.getElementById('error-modal'), {
+    keyboard: false
+  })
 
   // Check that the web page is run in a secure context,
   // as otherwise MetaMask won't be available
@@ -100,9 +104,41 @@ async function fetchAccountData() {
 
   document.querySelector("#btn-connect").style.display = "none";
   document.querySelector("#btn-disconnect").style.display = "block";
+
+  showPoolInfo();
 }
 
+function printErrorMessage(message) {
+  document.querySelector("#error-message").textContent = message;
+  window.errorModal.show();
+}
 
+async function showPoolInfo() {
+  if (window.selectedPool == undefined) {
+    return;
+  }
+
+  try {
+    window.vesting = await getContract(selectedPool);
+  } catch (e) {
+    printErrorMessage(e);
+    return;
+  }
+
+  let pool = await window.vesting.methods.pool().call();
+
+  let totalSize = web3.utils.fromWei(pool.amount, "ether");
+  let totalClaimed = web3.utils.fromWei(pool.totalClaimed, "ether");
+  let remained = totalSize - totalClaimed;
+
+  document.querySelector("#pool-info-name").textContent = selectedPool;
+  document.querySelector("#pool-info-contract").textContent = window.vesting._address;
+  document.querySelector("#pool-info-size").textContent = `${totalSize} Polka`;
+  document.querySelector("#pool-info-remained").textContent = `${remained} Polka`;
+  document.querySelector("#pool-info-claimed").textContent = `${totalClaimed} Polka`;
+  document.querySelector("#pool-info-start-time").textContent = new Date(pool.startTime * 1000);
+  document.querySelector("#pool-info-end-time").textContent = new Date(pool.endTime * 1000);
+}
 
 /**
  * Fetch account data for UI when
@@ -127,7 +163,6 @@ async function refreshAccountData() {
   await fetchAccountData(provider);
   document.querySelector("#btn-connect").removeAttribute("disabled")
 }
-
 
 
 //***METAMASK EIP1193
@@ -263,7 +298,6 @@ async function onDisconnect() {
   document.querySelector("#btn-disconnect").style.display = "none";
 }
 
-
 /**
  * Main entry point.
  */
@@ -271,4 +305,12 @@ window.addEventListener('load', async () => {
   init();
   document.querySelector("#btn-connect").addEventListener("click", onConnect);
   document.querySelector("#btn-disconnect").addEventListener("click", onDisconnect);
+  document.querySelector('#pool-selection').addEventListener('click', ({target}) => {
+    if (target.getAttribute('name') === 'pool') { // check if user clicks right element
+      window.selectedPool = target.id;
+  
+      showPoolInfo();
+    }
+  });
+
 });

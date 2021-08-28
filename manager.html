@@ -66,52 +66,52 @@
         </div>
       </div>
       <!-- Pools -->
-      <div class="row mt-5">
+      <div class="row mt-5" id="pool-selection">
         <div class="col-md-12">
           <h1 class="h2">Select the pool</h1>
           <p class="text-muted">Working with pool requires wallet connection.</p>
         </div>
         <div class=" col-md-3 form-check text-start">
-          <input type="radio" class="btn-check" id="poolPrivateSale" name="pool" checked>
-          <label class="btn btn-outline-primary" for="poolPrivateSale">Private Sale</label><br>
+          <input type="radio" class="btn-check" id="PrivateSale" name="pool">
+          <label class="btn btn-outline-primary" for="PrivateSale">PrivateSale</label><br>
         </div>
         <div class=" col-md-3 form-check text-center">
-          <input type="radio" class="btn-check" id="poolChainGuardian" name="pool">
-          <label class="btn btn-outline-primary" for="poolChainGuardian">ChainGuardian</label><br>
+          <input type="radio" class="btn-check" id="ChainGuardian" name="pool">
+          <label class="btn btn-outline-primary" for="ChainGuardian">ChainGuardian</label><br>
         </div>
         <div class=" col-md-3 form-check text-center">
-          <input type="radio" class="btn-check" id="poolTrustedPad" name="pool">
-          <label class="btn btn-outline-primary" for="poolTrustedPad">TrustPad</label><br>
+          <input type="radio" class="btn-check" id="TrustPad" name="pool">
+          <label class="btn btn-outline-primary" for="TrustPad">TrustPad</label><br>
         </div>
         <div class=" col-md-3 form-check text-end">
-          <input type="radio" class="btn-check" id="poolLiquidityLock" name="pool">
-          <label class="btn btn-outline-primary" for="poolLiquidityLock">Liquidity Lock</label><br>
+          <input type="radio" class="btn-check" id="LiquidityLock" name="pool">
+          <label class="btn btn-outline-primary" for="LiquidityLock">LiquidityLock</label><br>
         </div>
       </div>
 
       <!-- Pool Info -->
       <div class="row mt-5">
         <div class="col-md-12">
-          <h1 class="h2"><span id="poolInfoName">Private Sale</span> pool info</h1>
+          <h1 class="h2"><span id="pool-info-name"></span> pool info</h1>
           <p class="text-muted">Showing the pool info requires wallet connection.</p>
         </div>
         <div class="col-md-6">
-          <p>Contract Address: <span id="poolInfoContract">0x5bDed8f6BdAE766C361EDaE25c5DC966BCaF8f43</span></p>
+          <p>Contract Address: <span id="pool-info-contract"><span class="text-muted">Connect wallet, pick a pool</span></span></p>
         </div>
         <div class="col-md-6">
-          <p>Total pool size: <span id="poolInfoSize">1000 Polka</span>
+          <p>Total pool size: <span id="pool-info-size"><span class="text-muted">Connect wallet, pick a pool</span></span>
         </div>
         <div class="col-md-6">
-          <p>Remained: <span id="poolInfoRemained">123 Polka</span>
+          <p>Remained: <span id="pool-info-remained"><span class="text-muted">Connect wallet, pick a pool</span></span>
         </div>
         <div class="col-md-6">
-          <p>Claimed: <span id="poolInfoClaimed">756 Polka</span>
+          <p>Claimed: <span id="pool-info-claimed"><span class="text-muted">Connect wallet, pick a pool</span></span>
         </div>
         <div class="col-md-6">
-          <p>Lock start time: <span id="poolInfoStartTime">17/08/2021  00:00 UTC</span>
+          <p>Lock start time: <span id="pool-info-start-time"><span class="text-muted">Connect wallet, pick a pool</span></span>
         </div>
         <div class="col-md-6">
-          <p>Lock end time: <span id="poolInfoEndTime">17/03/2022  00:00 UTC</span>
+          <p>Lock end time: <span id="pool-info-end-time"><span class="text-muted">Connect wallet, pick a pool</span></span>
         </div>
       </div>
 
@@ -149,6 +149,31 @@
       </div>
     </div>
     
+  </div>
+
+  <!-- Modal about generic errors -->
+  <div class="modal fade " id="error-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content alert alert-warning" role="alert">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Error</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">  
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <p>Error</p> 
+                <p id="error-message"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Modal about incorrect CSV -->
@@ -226,12 +251,11 @@
     <script type="text/javascript" src="router-abi.js"></script>
     <script type="text/javascript" src="erc20-abi.js"></script>
 
-    <!-- This is our example code -->
+    <!-- This is our code -->
+    <script type="text/javascript" src="./abi-js/Polka.js"></script>
+    <script type="text/javascript" src="./abi-js/Vesting.js"></script>
+    <script type="text/javascript" src="./js/polka.js"></script>
     <script type="module" src="./wallet-connect.js"></script>
-
-    <!-- This is a sample script to swap data -->
-    <script type="text/javascript" src="./trading.js"></script>
-    <script type="text/javascript" src="./dai_trading.js"></script>
 
     <!-- DataGridXL -->
     <script src="https://code.datagridxl.com/datagridxl.js"></script>
