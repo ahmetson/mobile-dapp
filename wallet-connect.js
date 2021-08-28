@@ -105,12 +105,29 @@ async function fetchAccountData() {
   document.querySelector("#btn-connect").style.display = "none";
   document.querySelector("#btn-disconnect").style.display = "block";
 
-  showPoolInfo();
+  // Showing pool also loads the tokens
+  await showPoolInfo();
+  await showPolkaToken();
 }
 
 function printErrorMessage(message) {
   document.querySelector("#error-message").textContent = message;
   window.errorModal.show();
+}
+
+async function showPolkaToken() {
+  try {
+    window.polka = await getContract("polka");
+  } catch (e) {
+    printErrorMessage(e);
+    return;
+  }
+
+  const balance = await window.polka.methods.balanceOf(window.selectedAccount).call({from: window.selectedAccount});
+  const ethBalance = web3.utils.fromWei(balance, "ether");
+  const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
+
+  document.querySelector("#polka-balance").textContent = humanFriendlyBalance;
 }
 
 async function showPoolInfo() {
