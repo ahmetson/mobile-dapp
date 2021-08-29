@@ -130,32 +130,6 @@ window.showPolkaToken = async function() {
   document.querySelector("#polka-balance").textContent = humanFriendlyBalance;
 }
 
-window.showPoolInfo = async function() {
-  if (window.selectedPool == undefined) {
-    return;
-  }
-
-  try {
-    window.vesting = await getContract(selectedPool);
-  } catch (e) {
-    printErrorMessage(e);
-    return;
-  }
-
-  let pool = await window.vesting.methods.pool().call();
-
-  let totalSize = web3.utils.fromWei(pool.amount, "ether");
-  let totalClaimed = web3.utils.fromWei(pool.totalClaimed, "ether");
-  let remained = totalSize - totalClaimed;
-
-  document.querySelector("#pool-info-name").textContent = selectedPool;
-  document.querySelector("#pool-info-contract").textContent = window.vesting._address;
-  document.querySelector("#pool-info-size").textContent = `${totalSize} Polka`;
-  document.querySelector("#pool-info-remained").textContent = `${remained} Polka`;
-  document.querySelector("#pool-info-claimed").textContent = `${totalClaimed} Polka`;
-  document.querySelector("#pool-info-start-time").textContent = new Date(pool.startTime * 1000);
-  document.querySelector("#pool-info-end-time").textContent = new Date(pool.endTime * 1000);
-}
 
 /**
  * Fetch account data for UI when
@@ -287,7 +261,6 @@ async function onConnect() {
 }
 
 
-
 /**
  * Disconnect wallet button pressed.
  */
@@ -322,13 +295,4 @@ window.addEventListener('load', async () => {
   init();
   document.querySelector("#btn-connect").addEventListener("click", onConnect);
   document.querySelector("#btn-disconnect").addEventListener("click", onDisconnect);
-
-  document.querySelector('#pool-selection').addEventListener('click', ({target}) => {
-    if (target.getAttribute('name') === 'pool') { // check if user clicks right element
-      window.selectedPool = target.id;
-  
-      showPoolInfo();
-    }
-  });
-
 });
