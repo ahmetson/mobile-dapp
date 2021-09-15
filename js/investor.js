@@ -152,7 +152,7 @@ function update() {
             document.querySelector("#pool-info-accessible").textContent = `${accessible.toFixed(4)} XP`;
             
             document.querySelector("#label-claimable").textContent = window.claimables.toFixed(4);
-            document.querySelector("#label-locked").textContent = locked;
+            document.querySelector("#label-locked").textContent = (locked - claimed - window.claimables).toFixed(4);
         
             changeProgresses(window.pool, window.grant);
         }
