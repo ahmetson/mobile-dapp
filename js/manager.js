@@ -156,6 +156,7 @@ window.addEventListener('load', async () => {
 
     document.querySelector("#btn-approve").addEventListener("click", onApprove);
     document.querySelector("#btn-add").addEventListener("click", onAdd);
+    document.querySelector("#btn-change").addEventListener("click", onChange);
 
     let toastEl = document.querySelector("#toast");
     window.toast = new bootstrap.Toast(toastEl);
@@ -315,6 +316,122 @@ async function onAdd() {
         });
 }
 
+
+/**
+ * On add wallet button pressed.
+*/
+async function onChange() {
+  let oldAddress = document.querySelector("#old-address");
+  let newAddress = document.querySelector("#new-address");
+
+  if (!web3) {
+    printErrorMessage("No web3 library. Please check your internet connection");
+    return;
+  }
+
+  if (!web3.eth) {
+    printErrorMessage("Please connect your wallet!");
+    return;
+  }
+
+  if (!window.vesting) {
+    printErrorMessage("Please select a pool");
+    return;
+  }
+
+
+  if (oldAddress.value.length == 0 || newAddress.value.length == 0) {
+    printErrorMessage("Old address or new address field is empty.");
+    return;
+  }
+
+  if (!isAddress(oldAddress.value)) {
+    printErrorMessage("Invalid old address");
+    return;
+  }
+
+  if (!isAddress(newAddress.value)) {
+    printErrorMessage("Invalid new address");
+    return;
+  }
+
+  let owner = await vesting.methods.owner().call({from: window.selectedAccount});
+  if (owner.toLowerCase() != window.selectedAccount.toLowerCase()) {
+    printErrorMessage(`Vesting manager ${owner} not matching your account ${window.selectedAccount}`);
+    return;
+  }
+
+  // Need to check that old address is not blacklisted
+  // Need to check that new address is not blacklisted
+  let oldBlacklisted = await vesting.methods.blacklist(oldAddress.value).call();
+  if (oldBlacklisted != "0x0000000000000000000000000000000000000000") {
+    printErrorMessage(`Old ${oldAddress.value} is already replaced by ${oldBlacklisted}`);
+    return;
+  }
+
+  let newBlacklisted = await vesting.methods.blacklist(newAddress.value).call();
+  if (newBlacklisted != "0x0000000000000000000000000000000000000000") {
+    printErrorMessage(`New ${newAddress.value} is already replaced by ${newBlacklisted}`);
+    return;
+  }
+
+  // Make sure that old address is in the pool
+  let oldGrant = await window.vesting.methods.tokenGrants(oldAddress.value).call();
+  if (web3.utils.fromWei(oldGrant.perSecond) == 0) {
+    printErrorMessage(`Old ${oldAddress.value} not found in the pool`);
+    return;
+  }
+  
+  // Make sure that new address is NOT the pool
+  let newGrant = await window.vesting.methods.tokenGrants(newAddress.value).call();
+  if (web3.utils.fromWei(newGrant.perSecond) != 0) {
+    printErrorMessage(`New ${newAddress.value} in the pool already`);
+    return;
+  }
+
+
+  // Parameters to pass to smartcontract
+  window.vesting.methods.changeInvestor(oldAddress.value, newAddress.value)
+  .send({from: window.selectedAccount})
+  .on('transactionHash', function(hash){
+    document.querySelector("#toast-title").textContent = "Wait Investor address change...";
+    document.querySelector(".toast-body").innerHTML = `See TX on
+      <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
+    `;
+
+    toast.show();
+
+    document.querySelector("#btn-change").removeAttribute("disabled");
+  })
+  .on('receipt', function(receipt){
+    toast.hide();
+
+    document.querySelector("#toast-title").textContent = `Investor address changed to ${newAddress.value}!`;
+    document.querySelector(".toast-body").innerHTML = `See TX on
+      <a href="https://rinkeby.etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
+    `;
+
+    toast.show();
+
+    document.querySelector("#btn-change").removeAttribute("disabled");
+    oldAddress.value = "";
+    newAddress.value = "";
+
+    csvFile.value = ""
+    totalPool = 0;
+    printTotalPool();
+    showPoolInfo();
+    showPolkaBalance();
+    window.grid.setData(defaultData);
+  })
+  .on('error', function(error, receipt) { // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+    printErrorMessage(error.message);
+    console.error(error.message);
+
+    document.querySelector("#btn-add").removeAttribute("disabled", "");
+  });
+}
+
 /**
  * Calculate total amount of tokens that manager should add into contract
  * 
@@ -342,3 +459,22 @@ function printTotalPool() {
 
     document.querySelector("#total-pool-amount").textContent = totalPool;
 }
+
+/**
+ * Checks if the given string is an address
+ *
+ * @method isAddress
+ * @param {String} address the given HEX adress
+ * @return {Boolean}
+*/
+var isAddress = function (address) {
+  if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+      // check if it has the basic requirements of an address
+      return false;
+  } else if (/^(0x)?[0-9a-f]{40}$/.test(address) || /^(0x)?[0-9A-F]{40}$/.test(address)) {
+      // If it's all small caps or all all caps, return true
+      return true;
+  }
+
+  return true;
+};

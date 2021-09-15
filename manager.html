@@ -110,40 +110,85 @@
         <div class="col-md-6">
           <p>Lock end time: <span id="pool-info-end-time"><span class="text-muted">Connect wallet, pick a pool</span></span>
         </div>
-      </div>
-
-    <div class="row mt-5">
-      <div class="col-md-12">
-        <h1 class="h2">Add Investors</h1>
-        <p class="text-muted">Showing the list of investors.</p>
-      </div>
-      <div class="col-md-12">
-        <div class="input-group mb-3">
-          <label class="input-group-text" for="csv-file">Open .CSV</label>
-          <input type="file" class="form-control" id="csv-file" name="files-csv" accept=".csv">
+    </div>
+    <hr>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link h4 active" id="add-investor-tab" data-bs-toggle="tab" data-bs-target="#add-investor" type="button" role="tab" aria-controls="add-investor" aria-selected="true">Add Investors</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link h4" id="change-investor-tab" data-bs-toggle="tab" data-bs-target="#change-investor" type="button" role="tab" aria-controls="change-investor" aria-selected="false">Change Investor</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link h4" id="list-tab" data-bs-toggle="tab" data-bs-target="#list" type="button" role="tab" aria-controls="list" aria-selected="false">List</button>
+      </li>
+    </ul>
+    <div class="tab-content mt-5 mb-5" id="myTabContent">
+      <!-- --------------------------------------------------------------- -->
+      <!--                                                                 -->
+      <!--                         Add investor                            -->
+      <!--                                                                 -->
+      <!-- --------------------------------------------------------------- -->
+      <div class="tab-pane fade show active " id="add-investor" role="tabpanel" aria-labelledby="add-investor-tab">
+        <div class="row mt-5">
+          <div class="col-md-12">
+            <div class="input-group mb-3">
+              <label class="input-group-text" for="csv-file">Open .CSV</label>
+              <input type="file" class="form-control" id="csv-file" name="files-csv" accept=".csv">
+            </div>
+          </div>
+    
+        </div>
+        <div class="row mb-5">
+          <div class="col-md-12">
+            <div id="grid"></div>
+          </div>
+        </div>
+    
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <p>Total Amount into Vesting contract: <strong><span id="total-pool-amount">0.0</span></strong> Polka</p>
+          </div>
+        </div>
+    
+        <div class="row mb-5">
+          <div class="col-md-6 text-end">
+            <button type="button" class="btn btn-primary" id="btn-approve">Approve</button>
+          </div>
+          <div class="col-md-6 text-start">
+            <button type="button" class="btn btn-success" id="btn-add" disabled>Add</button>
+          </div>
         </div>
       </div>
-
-    </div>
-    <div class="row mb-5">
-      <div class="col-md-12">
-        <div id="grid"></div>
+      <!-- --------------------------------------------------------------- -->
+      <!--                                                                 -->
+      <!--                         Change investor                         -->
+      <!--                                                                 -->
+      <!-- --------------------------------------------------------------- -->
+      <div class="tab-pane mt-5 fade" id="change-investor" role="tabpanel" aria-labelledby="change-investor-tab">
+        <div class="row">
+          <div class="col-md-12">
+            <p>Change the hacked investor</p>
+          </div>
+          <div class="col-md-5">
+            <label for="old-address">Old address:</label><br>
+            <input type="text" class="form-control " placeholder="Old address" id="old-address" />
+          </div>
+          <div class="col-md-5">
+            <label for="new-address">New address:</label><br>
+            <input type="text" class="form-control " placeholder="New address" id="new-address" />
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary" id="btn-change">Change</button>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12 text-center">
-        <p>Total Amount into Vesting contract: <strong><span id="total-pool-amount">0.0</span></strong> Polka</p>
-      </div>
-    </div>
-
-    <div class="row mb-5">
-      <div class="col-md-6 text-end">
-        <button type="button" class="btn btn-primary" id="btn-approve">Approve</button>
-      </div>
-      <div class="col-md-6 text-start">
-        <button type="button" class="btn btn-success" id="btn-add" disabled>Add</button>
-      </div>
+      <!-- --------------------------------------------------------------- -->
+      <!--                                                                 -->
+      <!--                         List                                    -->
+      <!--                                                                 -->
+      <!-- --------------------------------------------------------------- -->
+      <div class="tab-pane fade" id="list" role="tabpanel" aria-labelledby="list-tab">...</div>
     </div>
     
   </div>
