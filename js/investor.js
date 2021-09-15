@@ -112,14 +112,14 @@ function changeProgresses(pool, grant) {
     // claimed
     let claimed = parseFloat(web3.utils.fromWei(window.grant.totalClaimed, "ether"));
     let progressClaimed = claimed / percent;
-    changeProgress(claimedProgressBar, progressClaimed, `Claimed XP:<br>${claimed.toFixed(2)}`);
+    changeProgress(claimedProgressBar, progressClaimed, `Already Claimed XP:<br>${claimed.toFixed(2)}`);
 
     // claimable
     if (window.claimables == undefined) {
         window.claimables = claimable(pool, grant);
     }
     let progressClaimable = window.claimables / percent;
-    changeProgress(claimableProgressBar, progressClaimable, `Claimable XP:<br>${window.claimables.toFixed(2)}`);
+    changeProgress(claimableProgressBar, progressClaimable, `Available Claimable XP:<br>${window.claimables.toFixed(2)}`);
 
     // remaining = lock - (claimed + claimable)
     let remaining = locked - (claimed + window.claimables);
