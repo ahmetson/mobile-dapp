@@ -268,7 +268,6 @@ async function onAdd() {
         }
 
         // Parameters to pass to smartcontract
-        let grantAmount = data.length;
         let investors = data.flatMap((row) => {
             return row.investor
         });
@@ -276,7 +275,7 @@ async function onAdd() {
             return web3.utils.toWei(row.amount.toString(), "ether")
         });
 
-        window.vesting.methods.addTokenGrants(grantAmount, investors, amounts)
+        window.vesting.methods.addTokenGrants(investors, amounts)
         .send({from: window.selectedAccount})
         .on('transactionHash', function(hash){
           document.querySelector("#toast-title").textContent = "Wait Investor Addition...";
