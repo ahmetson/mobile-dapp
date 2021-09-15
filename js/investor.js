@@ -112,19 +112,19 @@ function changeProgresses(pool, grant) {
     // claimed
     let claimed = parseFloat(web3.utils.fromWei(window.grant.totalClaimed, "ether"));
     let progressClaimed = claimed / percent;
-    changeProgress(claimedProgressBar, progressClaimed, `Claimed Polka:<br>${claimed.toFixed(2)}`);
+    changeProgress(claimedProgressBar, progressClaimed, `Claimed XP:<br>${claimed.toFixed(2)}`);
 
     // claimable
     if (window.claimables == undefined) {
         window.claimables = claimable(pool, grant);
     }
     let progressClaimable = window.claimables / percent;
-    changeProgress(claimableProgressBar, progressClaimable, `Claimable Polka:<br>${window.claimables.toFixed(2)}`);
+    changeProgress(claimableProgressBar, progressClaimable, `Claimable XP:<br>${window.claimables.toFixed(2)}`);
 
     // remaining = lock - (claimed + claimable)
     let remaining = locked - (claimed + window.claimables);
     let progressRemaining = remaining / percent;
-    changeProgress(remainingProgressBar, progressRemaining, `Locked Polka:<br>${remaining.toFixed(2)}`);
+    changeProgress(remainingProgressBar, progressRemaining, `Locked XP:<br>${remaining.toFixed(2)}`);
 }
 
 function changeProgress(progressBar, progress, label) {
@@ -149,7 +149,7 @@ function update() {
             window.claimables = claimable(window.pool, window.grant);
             let accessible = window.claimables + parseFloat(claimed);
         
-            document.querySelector("#pool-info-accessible").textContent = `${accessible.toFixed(4)} Polka`;
+            document.querySelector("#pool-info-accessible").textContent = `${accessible.toFixed(4)} XP`;
             
             document.querySelector("#label-claimable").textContent = window.claimables.toFixed(4);
             document.querySelector("#label-locked").textContent = locked;
