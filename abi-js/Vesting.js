@@ -5,6 +5,16 @@ window.vestingAbi = [
         "internalType": "address",
         "name": "_token",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_startTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_vestingDuration",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -26,7 +36,7 @@ window.vestingAbi = [
         "type": "address"
       }
     ],
-    "name": "ChangedOwner",
+    "name": "ChangeInvestor",
     "type": "event"
   },
   {
@@ -71,36 +81,31 @@ window.vestingAbi = [
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
       },
       {
-        "indexed": false,
-        "internalType": "uint16",
-        "name": "vestingDuration",
-        "type": "uint16"
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    "name": "VestingPeriodAdded",
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
     "inputs": [
       {
-        "internalType": "uint16",
-        "name": "grantAmount",
-        "type": "uint16"
-      },
-      {
         "internalType": "address[]",
-        "name": "recipient",
+        "name": "_recipients",
         "type": "address[]"
       },
       {
         "internalType": "uint256[]",
-        "name": "amount",
+        "name": "_amounts",
         "type": "uint256[]"
       }
     ],
@@ -112,26 +117,27 @@ window.vestingAbi = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "vestingDuration",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    "name": "addVestingPeriod",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "blacklist",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "recipient",
+        "name": "_recipient",
         "type": "address"
       }
     ],
@@ -150,11 +156,16 @@ window.vestingAbi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "newOwner",
+        "name": "_oldAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newAddress",
         "type": "address"
       }
     ],
-    "name": "changeOwner",
+    "name": "changeInvestor",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -163,7 +174,7 @@ window.vestingAbi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "recipient",
+        "name": "_recipient",
         "type": "address"
       }
     ],
@@ -176,7 +187,7 @@ window.vestingAbi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "recipient",
+        "name": "_recipient",
         "type": "address"
       }
     ],
@@ -192,23 +203,10 @@ window.vestingAbi = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getNow",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "recipient",
+        "name": "_recipient",
         "type": "address"
       }
     ],
@@ -232,7 +230,7 @@ window.vestingAbi = [
             "type": "uint256"
           }
         ],
-        "internalType": "struct Vesting.Grant",
+        "internalType": "struct VestingPeriod.Grant",
         "name": "",
         "type": "tuple"
       }
@@ -293,6 +291,13 @@ window.vestingAbi = [
   },
   {
     "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "token",
     "outputs": [
       {
@@ -337,7 +342,7 @@ window.vestingAbi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "recipient",
+        "name": "_recipient",
         "type": "address"
       }
     ],
@@ -355,8 +360,40 @@ window.vestingAbi = [
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokensVestedPerDay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
-        "name": "recipient",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_recipient",
         "type": "address"
       }
     ],
