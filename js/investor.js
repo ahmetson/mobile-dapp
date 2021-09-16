@@ -26,7 +26,9 @@ window.claimable = function(pool, grant) {
 // Determine the pool that user should use.
 let choosePool = async function(investor, privateSale, chainGuardian, trustPad) {
     let grant = await privateSale.methods.tokenGrants(investor).call();
-    if (web3.utils.fromWei(grant.perSecond) != 0) {
+    let amount = parseFloat(web3.utils.fromWei(grant.amount)) + parseFloat(web3.utils.fromWei(grant.totalClaimed));
+
+    if (amount) {
         let blacklist = await privateSale.methods.blacklist(investor).call().catch(e => {
             throw 'Failed to check in Blacklist in Private Sale pool';
         });
@@ -40,7 +42,9 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
     }
 
     grant = await chainGuardian.methods.tokenGrants(investor).call();
-    if (web3.utils.fromWei(grant.perSecond)) {
+    amount = parseFloat(web3.utils.fromWei(grant.amount)) + parseFloat(web3.utils.fromWei(grant.totalClaimed));
+    
+    if (amount) {
         let blacklist = await chainGuardian.methods.blacklist(investor).call().catch(e => {
             throw 'Failed to check in Blacklist in Chain Guardian pool';
         });
@@ -54,7 +58,9 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
     }
 
     grant = await trustPad.methods.tokenGrants(investor).call();
-    if (web3.utils.fromWei(grant.perSecond)) {
+    amount = parseFloat(web3.utils.fromWei(grant.amount)) + parseFloat(web3.utils.fromWei(grant.totalClaimed));
+    
+    if (amount) {
         let blacklist = await trustPad.methods.blacklist(investor).call().catch(e => {
             throw 'Failed to check in Blacklist in Trust Pad pool';
         });
@@ -112,19 +118,19 @@ function changeProgresses(pool, grant) {
     // claimed
     let claimed = parseFloat(web3.utils.fromWei(window.grant.totalClaimed, "ether"));
     let progressClaimed = claimed / percent;
-    changeProgress(claimedProgressBar, progressClaimed, `Already Claimed XP:<br>${claimed.toFixed(2)}`);
+    changeProgress(claimedProgressBar, progressClaimed, `Already Claimed XP:<br>${claimed.toFixed(FIXED_DIGITS)}`);
 
     // claimable
     if (window.claimables == undefined) {
         window.claimables = claimable(pool, grant);
     }
     let progressClaimable = window.claimables / percent;
-    changeProgress(claimableProgressBar, progressClaimable, `Available Claimable XP:<br>${window.claimables.toFixed(2)}`);
+    changeProgress(claimableProgressBar, progressClaimable, `Available Claimable XP:<br>${window.claimables.toFixed(FIXED_DIGITS)}`);
 
     // remaining = lock - (claimed + claimable)
     let remaining = locked - (claimed + window.claimables);
     let progressRemaining = remaining / percent;
-    changeProgress(remainingProgressBar, progressRemaining, `Locked XP:<br>${remaining.toFixed(2)}`);
+    changeProgress(remainingProgressBar, progressRemaining, `Locked XP:<br>${remaining.toFixed(FIXED_DIGITS)}`);
 }
 
 function changeProgress(progressBar, progress, label) {
@@ -149,10 +155,10 @@ function update() {
             window.claimables = claimable(window.pool, window.grant);
             let accessible = window.claimables + parseFloat(claimed);
         
-            document.querySelector("#pool-info-accessible").textContent = `${accessible.toFixed(4)} XP`;
+            document.querySelector("#pool-info-accessible").textContent = `${accessible.toFixed(FIXED_DIGITS)} XP`;
             
-            document.querySelector("#label-claimable").textContent = window.claimables.toFixed(4);
-            document.querySelector("#label-locked").textContent = (locked - claimed - window.claimables).toFixed(4);
+            document.querySelector("#label-claimable").textContent = window.claimables.toFixed(FIXED_DIGITS);
+            document.querySelector("#label-locked").textContent = (locked - claimed - window.claimables).toFixed(FIXED_DIGITS);
         
             changeProgresses(window.pool, window.grant);
         }

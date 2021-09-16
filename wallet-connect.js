@@ -94,7 +94,7 @@ async function fetchAccountData() {
 
   const balance = await web3.eth.getBalance(window.selectedAccount);
   const ethBalance = web3.utils.fromWei(balance, "ether");
-  const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
+  const humanFriendlyBalance = parseFloat(ethBalance).toFixed(FIXED_DIGITS);
 
   document.querySelector("#eth-balance").textContent = humanFriendlyBalance;
 
@@ -125,9 +125,9 @@ window.showPolkaToken = async function() {
 
   const balance = await window.polka.methods.balanceOf(window.selectedAccount).call({from: window.selectedAccount});
   const ethBalance = web3.utils.fromWei(balance, "ether");
-  const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
+  const humanFriendlyBalance = parseFloat(ethBalance).toFixed(FIXED_DIGITS);
 
-  document.querySelector("#polka-balance").textContent = humanFriendlyBalance;
+  document.querySelector("#xp-balance").textContent = humanFriendlyBalance;
 }
 
 

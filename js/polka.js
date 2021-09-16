@@ -7,6 +7,8 @@
  * - evmChains
  */
  
+let FIXED_DIGITS = 6;
+
 // As for now we test the game on 
 let polkaConfig = {
     "4": {
