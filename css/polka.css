@@ -22,3 +22,7 @@
 #nav {
     padding: 15px 0px;
 }
+
+#btn-change, #btn-transfer {
+    margin-top: 15px;
+}

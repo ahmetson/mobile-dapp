@@ -6,28 +6,26 @@
  * - web3
  * - evmChains
  */
+ 
+let FIXED_DIGITS = 6;
 
 // As for now we test the game on 
 let polkaConfig = {
     "4": {
         "polka": {
-            "address": "0x8C84C4f1C4b0e3aFf3fb18BE0b508EC737DC54ae",
+            "address": "0x08F825A45F512a44D413e77e3AC776eBc4F326A6",
             "abi": "polkaAbi"
         },
         "PrivateSale": {
-            "address": "0x4Ea8Ef77ED3cbe424BB07BE4d5b9f8e368e914cF",
+            "address": "0xDac609A1975489a0fc7feeC172cf480b8a3A6c2D",
             "abi": "vestingAbi"
         },
         "ChainGuardian": {
-            "address": "0x4Ea8Ef77ED3cbe424BB07BE4d5b9f8e368e914cF",
+            "address": "0x6B7B746AB4DE072Fb916A5BD2a5f35400002E25b",
             "abi": "vestingAbi"
         },
         "TrustPad": {
-            "address": "0x4Ea8Ef77ED3cbe424BB07BE4d5b9f8e368e914cF",
-            "abi": "vestingAbi"
-        },
-       "LiquidityLock": {
-           "address": "0x4Ea8Ef77ED3cbe424BB07BE4d5b9f8e368e914cF",
+            "address": "0x70c80041BE60189D50273aDa10966bBCb1b7b3a8",
             "abi": "vestingAbi"
         }
     }

@@ -1,6 +1,6 @@
 <html>
   <head>
-    <link rel="shortcut icon" href="https://oss.seascape.network/logo.png" />
+    <link rel="shortcut icon" href="https://polkafantasy.com/favicon.ico" />
     <title>Investor's Vesting Contract</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,33 +63,10 @@
               <span class="badge bg-primary rounded-pill" id="eth-balance">0</span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              POLKA balance:
-              <span class="badge bg-primary rounded-pill" id="polka-balance">0</span>
+              XP balance:
+              <span class="badge bg-primary rounded-pill" id="xp-balance">0</span>
             </li>
           </ul>
-        </div>
-      </div>
-      <!-- Pools -->
-      <div class="row mt-5" id="pool-selection">
-        <div class="col-md-12">
-          <h1 class="h2">Select the pool</h1>
-          <p class="text-muted">Working with pool requires wallet connection.</p>
-        </div>
-        <div class=" col-md-3 form-check text-start">
-          <input type="radio" class="btn-check" id="PrivateSale" name="pool">
-          <label class="btn btn-outline-primary" for="PrivateSale">PrivateSale</label><br>
-        </div>
-        <div class=" col-md-3 form-check text-center">
-          <input type="radio" class="btn-check" id="ChainGuardian" name="pool">
-          <label class="btn btn-outline-primary" for="ChainGuardian">ChainGuardian</label><br>
-        </div>
-        <div class=" col-md-3 form-check text-center">
-          <input type="radio" class="btn-check" id="TrustPad" name="pool">
-          <label class="btn btn-outline-primary" for="TrustPad">TrustPad</label><br>
-        </div>
-        <div class=" col-md-3 form-check text-end">
-          <input type="radio" class="btn-check" id="LiquidityLock" name="pool">
-          <label class="btn btn-outline-primary" for="LiquidityLock">LiquidityLock</label><br>
         </div>
       </div>
 
@@ -100,10 +77,10 @@
           <p class="text-muted">Showing the investment info requires wallet connection.</p>
         </div>
         <div class="col-md-6">
-          <p>Contract Address: <span id="pool-info-contract"><span class="text-muted">Connect wallet, pick a pool</span></span></p>
+          <p>Contract Address: <span id="pool-info-contract"><span class="text-muted">Connect wallet</span></span></p>
         </div>
         <div class="col-md-6">
-          <p>Claimed + claimable: <span id="pool-info-accessible"><span class="text-muted">Connect wallet, pick a pool</span></span>
+          <p>Available Claimable: <span id="pool-info-accessible"><span class="text-muted">Connect wallet</span></span>
         </div>
       </div>
       <div class="row mt-5">
@@ -135,7 +112,7 @@
 
       <div class="row mt-5 mb-5">
         <div class="col-md-12 text-center">
-          Claimable/Locked (Polka):
+          Available Claimable/Locked (XP):
           <strong><span id="label-claimable">0.0</span></strong> /
           <strong><span id="label-locked">0.0</span></strong>
         </div>
