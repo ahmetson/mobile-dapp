@@ -25,6 +25,8 @@ window.showPoolInfo = async function() {
   document.querySelector("#pool-info-claimed").textContent = `${totalClaimed} Polka`;
   document.querySelector("#pool-info-start-time").textContent = new Date(pool.startTime * 1000);
   document.querySelector("#pool-info-end-time").textContent = new Date(pool.endTime * 1000);
+
+  loadData(selectedPool, onLoadData);
 }
 
 /**
@@ -54,6 +56,16 @@ function validateCsv(data) {
         return "Expected 2 columns (investor, amount) to be given. CSV has "+keys.length+" columns";
     }
 
+    // List of already added investors
+    let listData = window.listGrid.getData();
+    let addedInvestors = [];
+    
+    if (listData.length && !Array.isArray(listData[0])) {
+      addedInvestors = listData.flatMap((row) => {
+        return row.investor.toLowerCase()
+      });
+    }
+
     for (var i = 0; i < data.length; i++ ) {
         let row = data[i];
 
@@ -72,6 +84,11 @@ function validateCsv(data) {
         if (isNaN(parseFloat(row.amount))) {
             return `Incorrect 'amount' value at row: ${i + 1}. Address ${row.amount} is wrong!`;
         }
+        
+        let poolI = addedInvestors.indexOf(row.investor.toLowerCase());
+        if (poolI > -1) {
+            return `Incorrect 'investor' value at row ${i + 1}. ${row.investor} already in the pool at row ${poolI + 1}!`;
+        }
    }
 
     return true;
@@ -80,6 +97,46 @@ function validateCsv(data) {
 function printInvalidCsvMessage(message) {
     document.querySelector("#invalid-csv-message").textContent = message;
     invalidCsvModal.show();
+}
+
+function onLoadData(data) {
+  let jsn = JSON.parse(data);
+
+  let dataList = []
+
+  for (var key in jsn) {
+    dataList.push({
+        investor: key,
+        amount: jsn[key].amount,
+        claimed: jsn[key].claimed
+    })
+  }
+
+  window.listGrid.setData(defaultListData, listColumns);
+  window.listGrid.setData(dataList);
+};
+
+function loadData(name, callback) {
+  let url = 'https://polka-sync.herokuapp.com/';
+  if (name == 'PrivateSale') {
+    url += 'private-sale.json';
+  } else if (name == 'ChainGuardian') {
+    url += 'chain-guardian.json';
+  } else if (name == 'TrustPad') {
+    url += 'trust-pad.json';
+  }
+
+  var xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      callback(xhr.response);
+    } else {
+      console.log('The request failed!');
+    }
+  };
+
+  xhr.open('GET', url);
+  xhr.send();
 }
 
 /**
@@ -100,6 +157,23 @@ window.addEventListener('load', async () => {
             title: "amount",
             source: "amount"
         }]
+    });
+
+    window.defaultListData = DataGridXL.createEmptyData(3,3);
+    window.listColumns = [{
+      title: "investor",
+      source: "investor"
+    }, {
+      title: "amount",
+      source: "amount"
+    }, {
+      title: "claimed",
+      source: "claimed"
+    }];
+
+    window.listGrid = new DataGridXL("list-grid", {
+      data: window.defaultListData,
+      columns: listColumns 
     });
 
     // Popup to show if CSV is invalid
@@ -275,6 +349,7 @@ async function onAdd() {
         let amounts = data.flatMap((row) => {
             return web3.utils.toWei(row.amount.toString(), "ether")
         });
+
 
         window.vesting.methods.addTokenGrants(investors, amounts)
         .send({from: window.selectedAccount})
