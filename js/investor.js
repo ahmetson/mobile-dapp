@@ -26,7 +26,9 @@ window.claimable = function(pool, grant) {
 // Determine the pool that user should use.
 let choosePool = async function(investor, privateSale, chainGuardian, trustPad) {
     let grant = await privateSale.methods.tokenGrants(investor).call();
-    if (web3.utils.fromWei(grant.perSecond) != 0) {
+    let amount = parseFloat(web3.utils.fromWei(grant.amount)) + parseFloat(web3.utils.fromWei(grant.totalClaimed));
+
+    if (amount) {
         let blacklist = await privateSale.methods.blacklist(investor).call().catch(e => {
             throw 'Failed to check in Blacklist in Private Sale pool';
         });
@@ -40,7 +42,9 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
     }
 
     grant = await chainGuardian.methods.tokenGrants(investor).call();
-    if (web3.utils.fromWei(grant.perSecond)) {
+    amount = parseFloat(web3.utils.fromWei(grant.amount)) + parseFloat(web3.utils.fromWei(grant.totalClaimed));
+    
+    if (amount) {
         let blacklist = await chainGuardian.methods.blacklist(investor).call().catch(e => {
             throw 'Failed to check in Blacklist in Chain Guardian pool';
         });
@@ -54,7 +58,9 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
     }
 
     grant = await trustPad.methods.tokenGrants(investor).call();
-    if (web3.utils.fromWei(grant.perSecond)) {
+    amount = parseFloat(web3.utils.fromWei(grant.amount)) + parseFloat(web3.utils.fromWei(grant.totalClaimed));
+    
+    if (amount) {
         let blacklist = await trustPad.methods.blacklist(investor).call().catch(e => {
             throw 'Failed to check in Blacklist in Trust Pad pool';
         });
