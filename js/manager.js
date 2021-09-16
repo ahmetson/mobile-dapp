@@ -20,9 +20,9 @@ window.showPoolInfo = async function() {
 
   document.querySelector("#pool-info-name").textContent = selectedPool;
   document.querySelector("#pool-info-contract").textContent = window.vesting._address;
-  document.querySelector("#pool-info-size").textContent = `${totalSize} Polka`;
-  document.querySelector("#pool-info-remained").textContent = `${remained} Polka`;
-  document.querySelector("#pool-info-claimed").textContent = `${totalClaimed} Polka`;
+  document.querySelector("#pool-info-size").textContent = `${totalSize} XP`;
+  document.querySelector("#pool-info-remained").textContent = `${remained} XP`;
+  document.querySelector("#pool-info-claimed").textContent = `${totalClaimed} XP`;
   document.querySelector("#pool-info-start-time").textContent = new Date(pool.startTime * 1000);
   document.querySelector("#pool-info-end-time").textContent = new Date(pool.endTime * 1000);
 

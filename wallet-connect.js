@@ -127,7 +127,7 @@ window.showPolkaToken = async function() {
   const ethBalance = web3.utils.fromWei(balance, "ether");
   const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
 
-  document.querySelector("#polka-balance").textContent = humanFriendlyBalance;
+  document.querySelector("#xp-balance").textContent = humanFriendlyBalance;
 }
 
 
