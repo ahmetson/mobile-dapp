@@ -231,6 +231,7 @@ window.addEventListener('load', async () => {
     document.querySelector("#btn-approve").addEventListener("click", onApprove);
     document.querySelector("#btn-add").addEventListener("click", onAdd);
     document.querySelector("#btn-change").addEventListener("click", onChange);
+    document.querySelector("#btn-transfer").addEventListener("click", onTransfer);
 
     let toastEl = document.querySelector("#toast");
     window.toast = new bootstrap.Toast(toastEl);
@@ -393,7 +394,7 @@ async function onAdd() {
 
 
 /**
- * On add wallet button pressed.
+ * On change investor button pressed.
 */
 async function onChange() {
   let oldAddress = document.querySelector("#old-address");
@@ -503,9 +504,91 @@ async function onChange() {
     printErrorMessage(error.message);
     console.error(error.message);
 
-    document.querySelector("#btn-add").removeAttribute("disabled", "");
+    document.querySelector("#btn-change").removeAttribute("disabled", "");
   });
 }
+
+
+/**
+ * On transfer ownership clicked
+*/
+async function onTransfer() {
+  if (!web3) {
+    printErrorMessage("No web3 library. Please check your internet connection");
+    return;
+  }
+
+  if (!web3.eth) {
+    printErrorMessage("Please connect your wallet!");
+    return;
+  }
+
+  if (!window.vesting) {
+    printErrorMessage("Please select a pool");
+    return;
+  }
+
+  let newAddress = document.querySelector("#new-owner");
+
+  if (newAddress.value.length == 0) {
+    printErrorMessage("Field is empty.");
+    return;
+  }
+
+  if (!isAddress(newAddress.value)) {
+    printErrorMessage("Invalid address");
+    return;
+  }
+
+  let owner = await vesting.methods.owner().call({from: window.selectedAccount});
+  if (owner.toLowerCase() != window.selectedAccount.toLowerCase()) {
+    printErrorMessage(`Vesting manager ${owner} not matching your account ${window.selectedAccount}`);
+    return;
+  }
+
+
+  // Parameters to pass to smartcontract
+  window.vesting.methods.transferOwnership(newAddress.value)
+  .send({from: window.selectedAccount})
+  .on('transactionHash', function(hash){
+    document.querySelector("#toast-title").textContent = "Wait ownership transfer...";
+    document.querySelector(".toast-body").innerHTML = `See TX on
+      <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
+    `;
+
+    toast.show();
+
+    document.querySelector("#btn-transfer").removeAttribute("disabled");
+  })
+  .on('receipt', function(receipt){
+    toast.hide();
+
+    document.querySelector("#toast-title").textContent = `Ownership transferred to ${newAddress.value}!`;
+    document.querySelector(".toast-body").innerHTML = `See TX on
+      <a href="https://rinkeby.etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
+    `;
+
+    toast.show();
+
+    document.querySelector("#btn-transfer").removeAttribute("disabled");
+    oldAddress.value = "";
+    newAddress.value = "";
+
+    csvFile.value = ""
+    totalPool = 0;
+    printTotalPool();
+    showPoolInfo();
+    showPolkaBalance();
+    window.grid.setData(defaultData);
+  })
+  .on('error', function(error, _receipt) { // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+    printErrorMessage(error.message);
+    console.error(error.message);
+
+    document.querySelector("#btn-transfer").removeAttribute("disabled", "");
+  });
+}
+
 
 /**
  * Calculate total amount of tokens that manager should add into contract

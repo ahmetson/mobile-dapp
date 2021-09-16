@@ -119,6 +119,9 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link h4" id="change-investor-tab" data-bs-toggle="tab" data-bs-target="#change-investor" type="button" role="tab" aria-controls="change-investor" aria-selected="false">Change Investor</button>
       </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link h4" id="transfer-ownership-tab" data-bs-toggle="tab" data-bs-target="#transfer-ownership" type="button" role="tab" aria-controls="transfer-ownership" aria-selected="false">Transfer Ownership</button>
+      </li>
     </ul>
     <div class="tab-content mt-5 mb-5" id="myTabContent">
       <!-- --------------------------------------------------------------- -->
@@ -184,6 +187,25 @@
           </div>
           <div class="col-md-2">
             <button class="btn btn-primary" id="btn-change">Change</button>
+          </div>
+        </div>
+      </div>
+      <!-- --------------------------------------------------------------- -->
+      <!--                                                                 -->
+      <!--                         Transfer ownership                      -->
+      <!--                                                                 -->
+      <!-- --------------------------------------------------------------- -->
+      <div class="tab-pane mt-5 fade" id="transfer-ownership" role="tabpanel" aria-labelledby="transfer-ownership-tab">
+        <div class="row">
+          <div class="col-md-12">
+            <p>Change the owner of this pool</p>
+          </div>
+          <div class="col-md-6">
+            <label for="new-address">New owner:</label><br>
+            <input type="text" class="form-control " placeholder="New owner address" id="new-owner" />
+          </div>
+          <div class="col-md-6">
+            <button class="btn btn-primary" id="btn-transfer">Transfer</button>
           </div>
         </div>
       </div>
