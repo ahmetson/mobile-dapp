@@ -90,13 +90,8 @@ async function fetchAccountData() {
   // MetaMask does not give you all accounts, only the selected account
   window.selectedAccount = accounts[0];
 
+  // Display the account
   document.querySelector("#selected-account").textContent = window.selectedAccount.substring(0, 10) + "..." + window.selectedAccount.substring(36);
-
-  const balance = await web3.eth.getBalance(window.selectedAccount);
-  const ethBalance = web3.utils.fromWei(balance, "ether");
-  const humanFriendlyBalance = parseFloat(ethBalance).toFixed(FIXED_DIGITS);
-
-  document.querySelector("#eth-balance").textContent = humanFriendlyBalance;
 
   // Display fully loaded UI for wallet data
   document.querySelector("#connected").style.display = "flex";
@@ -107,7 +102,23 @@ async function fetchAccountData() {
 
   // Showing pool also loads the tokens
   await showPoolInfo();
-  await showPolkaToken();
+  updateBalance();
+}
+
+function updateBalance() {
+  if (window.balanceTimeout == undefined) {
+      clearInterval(window.balanceTimeout);
+  }
+
+  window.balanceTimeout = setInterval(async () => {
+    if (window.showNativeToken) {
+      await window.showNativeToken();
+    }
+          
+    if (window.showPolkaToken) {
+      await window.showPolkaToken();
+    }
+  }, 1000);
 }
 
 window.printErrorMessage = function(message) {
@@ -115,12 +126,22 @@ window.printErrorMessage = function(message) {
   window.errorModal.show();
 }
 
+window.showNativeToken = async function() {
+  const balance               = await web3.eth.getBalance(window.selectedAccount);
+  const ethBalance            = web3.utils.fromWei(balance, "ether");
+  const humanFriendlyBalance  = parseFloat(ethBalance).toFixed(FIXED_DIGITS);
+
+  document.querySelector("#eth-balance").textContent = humanFriendlyBalance;
+}
+
 window.showPolkaToken = async function() {
-  try {
-    window.polka = await getContract("polka");
-  } catch (e) {
-    printErrorMessage(e);
-    return;
+  if (!window.polka) {
+    try {
+      window.polka = await getContract("polka");
+    } catch (e) {
+      printErrorMessage(e);
+      return;
+    }
   }
 
   const balance = await window.polka.methods.balanceOf(window.selectedAccount).call({from: window.selectedAccount});
