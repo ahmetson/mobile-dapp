@@ -107,6 +107,11 @@ window.showPoolInfo = async function() {
     window.startTime = new Date(window.pool.startTime * 1000);
     window.endTime = new Date(window.pool.endTime * 1000);
 
+    let poolInfoDanger = document.querySelector("#pool-info-danger");
+    if (poolInfoDanger) {
+        poolInfoDanger.setAttribute("style", "display: none;")
+    }
+
     document.querySelector("#pool-info-name").textContent = selectedPool;
     document.querySelector("#pool-info-contract").textContent = window.vesting._address;
     
