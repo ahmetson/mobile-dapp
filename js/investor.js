@@ -45,7 +45,7 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
 
         window.grant = grant;
         window.vesting = privateSale;
-        return "PrivateSale";
+        return "Private Sale";
     }
 
     grant = await chainGuardian.methods.tokenGrants(investor).call();
@@ -62,7 +62,7 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
 
         window.grant = grant;
         window.vesting = chainGuardian;
-        return "ChainGuardian";
+        return "Chain Guardian";
     }
 
     grant = await trustPad.methods.tokenGrants(investor).call();
@@ -78,7 +78,7 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
 
         window.vesting = trustPad;
         window.grant = grant;
-        return "TrustPad";
+        return "Trust Pad";
     }
 
     throw `Could not find ${investor} in any pool!`;
