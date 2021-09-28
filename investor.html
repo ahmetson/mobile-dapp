@@ -19,15 +19,15 @@
         </div>
         <div class="col-md-4">
           <h4 class="text-muted">
-            Investor's page
+            Investor's Page
           </h4>
         </div>
         <div class="col-md-4">
           <button class="btn btn-primary float-end" id="btn-connect">
-            Connect wallet
+            Connect Wallet
           </button>
           <button class="btn btn-warning float-end" id="btn-disconnect" style="display: none;">
-            Disconnect wallet
+            Disconnect Wallet
           </button>
         </div>
       </div>
@@ -55,15 +55,15 @@
         <div class="col-5 text-end">
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-primary">
-              Account
+              Account:
               <strong><span class="badge bg-primary rounded-pill" id="selected-account"></span></strong>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              ETH balance:
+              ETH Balance:
               <span class="badge bg-primary rounded-pill" id="eth-balance">0</span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              XP balance:
+              XP Balance:
               <span class="badge bg-primary rounded-pill" id="xp-balance">0</span>
             </li>
           </ul>
@@ -73,8 +73,8 @@
       <!-- Investment info -->
       <div class="row mt-5">
         <div class="col-md-12">
-          <h1 class="h2"><span id="pool-info-name"></span> pool info</h1>
-          <p class="text-muted">Showing the investment info requires wallet connection.</p>
+          <h1 class="h2"><span id="pool-info-name"></span> Pool Info:</h1>
+          <p class="text-danger">Please connect your wallet to see Pool Info!</p>
         </div>
         <div class="col-md-6">
           <p>Contract Address: <span id="pool-info-contract"><span class="text-muted">Connect wallet</span></span></p>
@@ -85,7 +85,7 @@
       </div>
       <div class="row mt-5">
         <div class="col-md-12">
-          <h3>Vesting progress:</h3>
+          <h3>Vesting Progress:</h3>
         </div>
         <div class="col-md-12">
           <div class="progress" style="height: 40px; padding: 3px;">
@@ -98,15 +98,15 @@
       <div class="row">
         <div class="col text-start">
           <span class="text-muted">Start:</span><br>
-          <span id="pool-info-start-time"><span class="text-muted">Connect wallet, pick a pool</span></span>
+          <span id="pool-info-start-time"><span class="text-muted">Connect wallet</span></span>
         </div>
         <div class="col text-center">
           <span class="text-muted">Remained:</span><br>
-          <span id="pool-info-remained-time"><span class="text-muted">Connect wallet, pick a pool</span></span>
+          <span id="pool-info-remained-time"><span class="text-muted">Connect wallet</span></span>
         </div>
         <div class="col text-end">
           <span class="text-muted">End:</span><br>
-          <span id="pool-info-end-time"><span class="text-muted">Connect wallet, pick a pool</span></span>
+          <span id="pool-info-end-time"><span class="text-muted">Connect wallet</span></span>
         </div>
       </div>
 
@@ -127,7 +127,7 @@
       <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content alert alert-warning" role="alert">
           <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Error</h5>
+            <h5 class="modal-title" id="staticBackdropLabel">Error:</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">  

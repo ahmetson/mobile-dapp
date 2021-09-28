@@ -1,5 +1,11 @@
 "use strict";
 
+/**
+ * Calculates the amount of Tokens that an investor could Claim.
+ * @param {Object} pool of total investment information
+ * @param {Object} grant of the investor 
+ * @returns Float
+ */
 window.claimable = function(pool, grant) {
     let startTime = parseInt(pool.startTime);
     if (startTime == 0) {
@@ -30,10 +36,11 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
 
     if (amount) {
         let blacklist = await privateSale.methods.blacklist(investor).call().catch(e => {
-            throw 'Failed to check in Blacklist in Private Sale pool';
+            console.error(e);
+            throw 'RPC Error while validating Blacklisted Accounts in Private Sale!';
         });
         if (blacklist != "0x0000000000000000000000000000000000000000") {
-            throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please.`;
+            throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please!`;
         }
 
         window.grant = grant;
@@ -46,7 +53,8 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
     
     if (amount) {
         let blacklist = await chainGuardian.methods.blacklist(investor).call().catch(e => {
-            throw 'Failed to check in Blacklist in Chain Guardian pool';
+            console.error(e);
+            throw 'RPC Error while validating Blacklisted Accounts in Chain Guardian';
         });
         if (blacklist != "0x0000000000000000000000000000000000000000") {
             throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please.`;
@@ -62,7 +70,7 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
     
     if (amount) {
         let blacklist = await trustPad.methods.blacklist(investor).call().catch(e => {
-            throw 'Failed to check in Blacklist in Trust Pad pool';
+            throw 'RPC Error while validating Blacklisted Accounts in Trust Pad';
         });
         if (blacklist != "0x0000000000000000000000000000000000000000") {
             throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please.`;
