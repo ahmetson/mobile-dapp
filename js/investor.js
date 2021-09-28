@@ -172,7 +172,6 @@ function update() {
             let locked = parseFloat(web3.utils.fromWei(window.grant.amount, "ether"));
             let claimed = parseFloat(web3.utils.fromWei(window.grant.totalClaimed, "ether"));
             window.claimables = claimable(window.pool, window.grant);
-            let accessible = window.claimables + parseFloat(claimed);
         
             document.querySelector("#pool-info-accessible").textContent = `${window.claimables.toFixed(FIXED_DIGITS)} XP`;
             
