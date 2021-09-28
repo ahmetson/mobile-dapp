@@ -1,5 +1,11 @@
 "use strict";
 
+/**
+ * Calculates the amount of Tokens that an investor could Claim.
+ * @param {Object} pool of total investment information
+ * @param {Object} grant of the investor 
+ * @returns Float
+ */
 window.claimable = function(pool, grant) {
     let startTime = parseInt(pool.startTime);
     if (startTime == 0) {
@@ -30,15 +36,16 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
 
     if (amount) {
         let blacklist = await privateSale.methods.blacklist(investor).call().catch(e => {
-            throw 'Failed to check in Blacklist in Private Sale pool';
+            console.error(e);
+            throw 'RPC Error while validating Blacklisted Accounts in Private Sale!';
         });
         if (blacklist != "0x0000000000000000000000000000000000000000") {
-            throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please.`;
+            throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please!`;
         }
 
         window.grant = grant;
         window.vesting = privateSale;
-        return "PrivateSale";
+        return "Private Sale";
     }
 
     grant = await chainGuardian.methods.tokenGrants(investor).call();
@@ -46,7 +53,8 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
     
     if (amount) {
         let blacklist = await chainGuardian.methods.blacklist(investor).call().catch(e => {
-            throw 'Failed to check in Blacklist in Chain Guardian pool';
+            console.error(e);
+            throw 'RPC Error while validating Blacklisted Accounts in Chain Guardian';
         });
         if (blacklist != "0x0000000000000000000000000000000000000000") {
             throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please.`;
@@ -54,7 +62,7 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
 
         window.grant = grant;
         window.vesting = chainGuardian;
-        return "ChainGuardian";
+        return "Chain Guardian";
     }
 
     grant = await trustPad.methods.tokenGrants(investor).call();
@@ -62,7 +70,7 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
     
     if (amount) {
         let blacklist = await trustPad.methods.blacklist(investor).call().catch(e => {
-            throw 'Failed to check in Blacklist in Trust Pad pool';
+            throw 'RPC Error while validating Blacklisted Accounts in Trust Pad';
         });
         if (blacklist != "0x0000000000000000000000000000000000000000") {
             throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please.`;
@@ -70,7 +78,7 @@ let choosePool = async function(investor, privateSale, chainGuardian, trustPad) 
 
         window.vesting = trustPad;
         window.grant = grant;
-        return "TrustPad";
+        return "Trust Pad";
     }
 
     throw `Could not find ${investor} in any pool!`;
@@ -99,6 +107,11 @@ window.showPoolInfo = async function() {
     window.startTime = new Date(window.pool.startTime * 1000);
     window.endTime = new Date(window.pool.endTime * 1000);
 
+    let poolInfoDanger = document.querySelector("#pool-info-danger");
+    if (poolInfoDanger) {
+        poolInfoDanger.setAttribute("style", "display: none;")
+    }
+
     document.querySelector("#pool-info-name").textContent = selectedPool;
     document.querySelector("#pool-info-contract").textContent = window.vesting._address;
     
@@ -108,6 +121,9 @@ window.showPoolInfo = async function() {
 }
 
 function changeProgresses(pool, grant) {
+    let visibleMin = 25;
+    let visibleMax = 50;
+
     let claimedProgressBar = document.querySelector("#progress-claimed");
     let claimableProgressBar = document.querySelector("#progress-claimable");
     let remainingProgressBar = document.querySelector("#progress-remaining");
@@ -117,19 +133,35 @@ function changeProgresses(pool, grant) {
 
     // claimed
     let claimed = parseFloat(web3.utils.fromWei(window.grant.totalClaimed, "ether"));
-    let progressClaimed = claimed / percent;
-    changeProgress(claimedProgressBar, progressClaimed, `Already Claimed XP:<br>${claimed.toFixed(FIXED_DIGITS)}`);
+    let progressClaimed = Math.max(visibleMin, claimed / percent);
 
     // claimable
     if (window.claimables == undefined) {
         window.claimables = claimable(pool, grant);
     }
-    let progressClaimable = window.claimables / percent;
-    changeProgress(claimableProgressBar, progressClaimable, `Available Claimable XP:<br>${window.claimables.toFixed(FIXED_DIGITS)}`);
+    let progressClaimable = Math.max(visibleMin, window.claimables / percent);
 
     // remaining = lock - (claimed + claimable)
     let remaining = locked - (claimed + window.claimables);
-    let progressRemaining = remaining / percent;
+    let progressRemaining = Math.min(visibleMax, remaining / percent);
+
+    // Locked tokens are less than 25 percent?
+    // then show it with minimum visible.
+    if (remaining / percent < visibleMin) {
+        progressRemaining = visibleMin;
+
+        // That means either the Claimed tokens are more than max visible stuff
+        if (claimed / percent > visibleMax) {
+            progressClaimed = visibleMax
+        } 
+        // Otherwise Claimable tokens are more than max visible
+        else {
+            progressClaimable = visibleMax;
+        }
+    }
+
+    changeProgress(claimedProgressBar, progressClaimed, `Already Claimed XP:<br>${claimed.toFixed(FIXED_DIGITS)}`);
+    changeProgress(claimableProgressBar, progressClaimable, `Available Claimable XP:<br>${window.claimables.toFixed(FIXED_DIGITS)}`);
     changeProgress(remainingProgressBar, progressRemaining, `Locked XP:<br>${remaining.toFixed(FIXED_DIGITS)}`);
 }
 
@@ -153,9 +185,8 @@ function update() {
             let locked = parseFloat(web3.utils.fromWei(window.grant.amount, "ether"));
             let claimed = parseFloat(web3.utils.fromWei(window.grant.totalClaimed, "ether"));
             window.claimables = claimable(window.pool, window.grant);
-            let accessible = window.claimables + parseFloat(claimed);
         
-            document.querySelector("#pool-info-accessible").textContent = `${accessible.toFixed(FIXED_DIGITS)} XP`;
+            document.querySelector("#pool-info-accessible").textContent = `${window.claimables.toFixed(FIXED_DIGITS)} XP`;
             
             document.querySelector("#label-claimable").textContent = window.claimables.toFixed(FIXED_DIGITS);
             document.querySelector("#label-locked").textContent = (locked - claimed - window.claimables).toFixed(FIXED_DIGITS);

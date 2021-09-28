@@ -15,19 +15,19 @@
       <!-- Top Menu -->
       <div class="row bg-light" id="nav">
         <div class="col-md-4" >
-          <img src="images/logo.svg" alt="PolkaFantasy - Japanese themed Marketplace and game" />
+          <a href="https://polkafantasy.com/" alt="Best Japanese NFT Marketplace and Metaverse Game" target="_blank"><img src="images/logo.svg" alt="PolkaFantasy - Japanese themed Marketplace and game" /></a>
         </div>
         <div class="col-md-4">
-          <h4 class="text-muted">
-            Investor's page
+          <h4 class="text-center font-weight-bold">
+            <strong>Investor's Page</strong>
           </h4>
         </div>
         <div class="col-md-4">
           <button class="btn btn-primary float-end" id="btn-connect">
-            Connect wallet
+            Connect Wallet
           </button>
           <button class="btn btn-warning float-end" id="btn-disconnect" style="display: none;">
-            Disconnect wallet
+            Disconnect Wallet
           </button>
         </div>
       </div>
@@ -50,20 +50,20 @@
       <!-- Wallet connected: show balance -->
       <div class="row mt-4 mb-4" id="connected" style="display: none;">
         <div class="col-7" >
-            Blockchain: <strong><span id="network-name"></span></strong>
+          <strong>Blockchain:</strong> <span id="network-name"></span>
         </div>
         <div class="col-5 text-end">
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-primary">
-              Account
-              <strong><span class="badge bg-primary rounded-pill" id="selected-account"></span></strong>
+              <strong>Account:</strong>
+              <span class="badge bg-primary rounded-pill" id="selected-account"></span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              ETH balance:
+              <strong>ETH Balance:</strong>
               <span class="badge bg-primary rounded-pill" id="eth-balance">0</span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              XP balance:
+              <strong>XP Balance:</strong>
               <span class="badge bg-primary rounded-pill" id="xp-balance">0</span>
             </li>
           </ul>
@@ -73,19 +73,19 @@
       <!-- Investment info -->
       <div class="row mt-5">
         <div class="col-md-12">
-          <h1 class="h2"><span id="pool-info-name"></span> pool info</h1>
-          <p class="text-muted">Showing the investment info requires wallet connection.</p>
+          <h1 class="h2"><span id="pool-info-name"></span> Pool Info:</h1>
+          <p class="text-danger" id="pool-info-danger">Please connect your wallet to see Pool Info!</p>
         </div>
         <div class="col-md-6">
-          <p>Contract Address: <span id="pool-info-contract"><span class="text-muted">Connect wallet</span></span></p>
+          <p><strong>Contract Address:</strong> <span id="pool-info-contract"><span class="text-muted">Connect wallet</span></span></p>
         </div>
         <div class="col-md-6">
-          <p>Available Claimable: <span id="pool-info-accessible"><span class="text-muted">Connect wallet</span></span>
+          <p><strong>Available Claimable:</strong> <span id="pool-info-accessible"><span class="text-muted">Connect wallet</span></span>
         </div>
       </div>
       <div class="row mt-5">
         <div class="col-md-12">
-          <h3>Vesting progress:</h3>
+          <h3>Vesting Progress:</h3>
         </div>
         <div class="col-md-12">
           <div class="progress" style="height: 40px; padding: 3px;">
@@ -97,24 +97,24 @@
       </div>
       <div class="row">
         <div class="col text-start">
-          <span class="text-muted">Start:</span><br>
-          <span id="pool-info-start-time"><span class="text-muted">Connect wallet, pick a pool</span></span>
+          <strong class="text-muted">Start:</strong><br>
+          <span id="pool-info-start-time"><span class="text-muted">Connect wallet</span></span>
         </div>
         <div class="col text-center">
-          <span class="text-muted">Remained:</span><br>
-          <span id="pool-info-remained-time"><span class="text-muted">Connect wallet, pick a pool</span></span>
+          <strong class="text-muted">Remained:</strong><br>
+          <span id="pool-info-remained-time"><span class="text-muted">Connect wallet</span></span>
         </div>
         <div class="col text-end">
-          <span class="text-muted">End:</span><br>
-          <span id="pool-info-end-time"><span class="text-muted">Connect wallet, pick a pool</span></span>
+          <strong class="text-muted">End:</strong><br>
+          <span id="pool-info-end-time"><span class="text-muted">Connect wallet</span></span>
         </div>
       </div>
 
       <div class="row mt-5 mb-5">
         <div class="col-md-12 text-center">
-          Available Claimable/Locked (XP):
-          <strong><span id="label-claimable">0.0</span></strong> /
-          <strong><span id="label-locked">0.0</span></strong>
+          <strong>Available Claimable/Locked (XP):</strong>
+          <span id="label-claimable">0.0</span> /
+          <span id="label-locked">0.0</span>
         </div>
         <div class="col-md-12 text-center mt-2">
           <button type="button" class="btn btn-success" id="btn-claim">Claim</button>
@@ -127,7 +127,7 @@
       <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content alert alert-warning" role="alert">
           <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Error</h5>
+            <h5 class="modal-title" id="staticBackdropLabel">Error:</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">  
