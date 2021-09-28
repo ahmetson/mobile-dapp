@@ -174,7 +174,7 @@ function update() {
             window.claimables = claimable(window.pool, window.grant);
             let accessible = window.claimables + parseFloat(claimed);
         
-            document.querySelector("#pool-info-accessible").textContent = `${accessible.toFixed(FIXED_DIGITS)} XP`;
+            document.querySelector("#pool-info-accessible").textContent = `${window.claimables.toFixed(FIXED_DIGITS)} XP`;
             
             document.querySelector("#label-claimable").textContent = window.claimables.toFixed(FIXED_DIGITS);
             document.querySelector("#label-locked").textContent = (locked - claimed - window.claimables).toFixed(FIXED_DIGITS);
