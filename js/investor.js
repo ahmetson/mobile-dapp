@@ -108,6 +108,9 @@ window.showPoolInfo = async function() {
 }
 
 function changeProgresses(pool, grant) {
+    let visibleMin = 25;
+    let visibleMax = 50;
+
     let claimedProgressBar = document.querySelector("#progress-claimed");
     let claimableProgressBar = document.querySelector("#progress-claimable");
     let remainingProgressBar = document.querySelector("#progress-remaining");
@@ -117,19 +120,35 @@ function changeProgresses(pool, grant) {
 
     // claimed
     let claimed = parseFloat(web3.utils.fromWei(window.grant.totalClaimed, "ether"));
-    let progressClaimed = claimed / percent;
-    changeProgress(claimedProgressBar, progressClaimed, `Already Claimed XP:<br>${claimed.toFixed(FIXED_DIGITS)}`);
+    let progressClaimed = Math.max(visibleMin, claimed / percent);
 
     // claimable
     if (window.claimables == undefined) {
         window.claimables = claimable(pool, grant);
     }
-    let progressClaimable = window.claimables / percent;
-    changeProgress(claimableProgressBar, progressClaimable, `Available Claimable XP:<br>${window.claimables.toFixed(FIXED_DIGITS)}`);
+    let progressClaimable = Math.max(visibleMin, window.claimables / percent);
 
     // remaining = lock - (claimed + claimable)
     let remaining = locked - (claimed + window.claimables);
-    let progressRemaining = remaining / percent;
+    let progressRemaining = Math.min(visibleMax, remaining / percent);
+
+    // Locked tokens are less than 25 percent?
+    // then show it with minimum visible.
+    if (remaining / percent < visibleMin) {
+        progressRemaining = visibleMin;
+
+        // That means either the Claimed tokens are more than max visible stuff
+        if (claimed / percent > visibleMax) {
+            progressClaimed = visibleMax
+        } 
+        // Otherwise Claimable tokens are more than max visible
+        else {
+            progressClaimable = visibleMax;
+        }
+    }
+
+    changeProgress(claimedProgressBar, progressClaimed, `Already Claimed XP:<br>${claimed.toFixed(FIXED_DIGITS)}`);
+    changeProgress(claimableProgressBar, progressClaimable, `Available Claimable XP:<br>${window.claimables.toFixed(FIXED_DIGITS)}`);
     changeProgress(remainingProgressBar, progressRemaining, `Locked XP:<br>${remaining.toFixed(FIXED_DIGITS)}`);
 }
 
