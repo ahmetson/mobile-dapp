@@ -11,7 +11,7 @@ let FIXED_DIGITS = 6;
 
 // As for now we test the game on 
 let polkaConfig = {
-    "4": {
+    "4": {                                  // Chain ID, 1 for Ethereum Mainnet. 4 for Rinkeby Testnet.
         "polka": {
             "address": "0x08F825A45F512a44D413e77e3AC776eBc4F326A6",
             "abi": "polkaAbi"
@@ -30,6 +30,8 @@ let polkaConfig = {
         }
     }
 };
+
+let polkaSyncURL = 'https://polka-sync.herokuapp.com/';
 
 /**
  * Returns a contract instance to use. If the configuration doesn't support the connected wallet, then throws an error.
