@@ -267,12 +267,21 @@ async function onApprove() {
           return;
         }
 
-        window.polka.methods.approve(vesting._address, web3.utils.toWei(totalPool.toString(), "ether"))
+        let allowance = await window.polka.methods.allowance(window.selectedAccount, vesting._address).call({from: window.selectedAccount});
+        if (parseFloat(web3.utils.fromWei(allowance, "ether")) >= totalPool) {
+          document.querySelector("#btn-approve").setAttribute("disabled", "");
+          document.querySelector("#btn-add").removeAttribute("disabled");
+          return;
+        }
+
+        let fiveMillion = web3.utils.toWei("5000000", "ether");
+
+        window.polka.methods.approve(vesting._address, fiveMillion)
         .send({from: window.selectedAccount})
         .on('transactionHash', function(hash){
           document.querySelector("#toast-title").textContent = "Wait Approve...";
           document.querySelector(".toast-body").innerHTML = `See TX on
-            <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
+            <a href="https://etherscan.io/tx/${hash}" target="_blank">explorer</a>
           `;
 
           toast.show();
@@ -284,7 +293,7 @@ async function onApprove() {
 
           document.querySelector("#toast-title").textContent = "Approve confirmed!";
           document.querySelector(".toast-body").innerHTML = `See TX on
-            <a href="https://rinkeby.etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
+            <a href="https://etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
 
             Now, you can click on <i>Add</i> button.
           `;
@@ -357,7 +366,7 @@ async function onAdd() {
         .on('transactionHash', function(hash){
           document.querySelector("#toast-title").textContent = "Wait Investor Addition...";
           document.querySelector(".toast-body").innerHTML = `See TX on
-            <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
+            <a href="https://etherscan.io/tx/${hash}" target="_blank">explorer</a>
           `;
 
           toast.show();
@@ -369,7 +378,7 @@ async function onAdd() {
 
           document.querySelector("#toast-title").textContent = "Investors were added!";
           document.querySelector(".toast-body").innerHTML = `See TX on
-            <a href="https://rinkeby.etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
+            <a href="https://etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
           `;
 
           toast.show();
@@ -472,7 +481,7 @@ async function onChange() {
   .on('transactionHash', function(hash){
     document.querySelector("#toast-title").textContent = "Wait Investor address change...";
     document.querySelector(".toast-body").innerHTML = `See TX on
-      <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
+      <a href="https://etherscan.io/tx/${hash}" target="_blank">explorer</a>
     `;
 
     toast.show();
@@ -484,7 +493,7 @@ async function onChange() {
 
     document.querySelector("#toast-title").textContent = `Investor address changed to ${newAddress.value}!`;
     document.querySelector(".toast-body").innerHTML = `See TX on
-      <a href="https://rinkeby.etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
+      <a href="https://etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
     `;
 
     toast.show();
@@ -553,7 +562,7 @@ async function onTransfer() {
   .on('transactionHash', function(hash){
     document.querySelector("#toast-title").textContent = "Wait ownership transfer...";
     document.querySelector(".toast-body").innerHTML = `See TX on
-      <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
+      <a href="https://etherscan.io/tx/${hash}" target="_blank">explorer</a>
     `;
 
     toast.show();
@@ -565,7 +574,7 @@ async function onTransfer() {
 
     document.querySelector("#toast-title").textContent = `Ownership transferred to ${newAddress.value}!`;
     document.querySelector(".toast-body").innerHTML = `See TX on
-      <a href="https://rinkeby.etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
+      <a href="https://etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
     `;
 
     toast.show();
