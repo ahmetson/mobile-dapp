@@ -117,7 +117,7 @@ function onLoadData(data) {
 };
 
 function loadData(name, callback) {
-  let url = 'https://polka-sync.herokuapp.com/';
+  let url = polkaSyncURL;
   if (name == 'PrivateSale') {
     url += 'private-sale.json';
   } else if (name == 'ChainGuardian') {

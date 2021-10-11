@@ -1,7 +1,7 @@
 {
-  "name": "cws-swap",
+  "name": "polka-website",
   "version": "1.0.0",
-  "description": "A website to upload data",
+  "description": "A website to interact with Vesting Contracts from PolkaFantasy",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,12 +12,9 @@
     "url": "git+https://github.com/dandelionlabs-io/polkafantasy-interface.git"
   },
   "keywords": [
-    "seascape",
-    "blocklords",
     "web3modal",
-    "cws",
-    "crowns",
     "ahmetson",
+    "dandellion labs",
     "polkafantasy"
   ],
   "author": "Medet Ahmetson <admin@blocklords.io>",

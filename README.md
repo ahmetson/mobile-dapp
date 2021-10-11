@@ -1,79 +1,41 @@
-This is a vanilla JavaScript example how to use Web3modal with different  wallet providers.
+# PolkaFantasy's token linear vesting website
+This repository contains the Token Linear Vesting frontend for PolkaFantasy project. This set of HTML pages that have been created to interact with the vesting process after PolkaFantasy's crowdsale.
 
-The purpose of this example is how to connect a cryptocurrency wallet
-to a website that is build on traditional HTML technologies and does not
-use any modern JavaScript framework. Uses cases would include:
-static HTML sites, WordPress, content management systems,
-tutorials and education.
+### Pre-requirements:
+Before you setup the website, you should do the following steps first:
+1. Deploy the contracts.
+2. Run the sync node: [polka-sync](https://github.com/ahmetson/polka-sync)
 
-The example works with
+> The instructions about how to deploy smartcontracts are in the *Polka Vesting* repository.
+> The instructions about how to run the sync bot is in *polka-sync* repository.
 
-* In-browser wallets (MetaMask, Opera, Brave),
+## About the source code
 
-* Mobile wallets through QR code scanning (WalletConnect)
+The source code in this repo has been created based on Web3 Modal Javascript library to allow to connect multiple Wallets into Website.
 
-* Account-based wallets (Fortmatic, others)
+- [Getting Started](#getting-started)
+  - [Requirements](#requirements)
+  - [Deploy Vesting Period](#deploy-vesting-period)
+  - [Deploy Token example (Testing purposes)](#deploy-token-example)
+- [Troubleshooting](#troubleshooting)
 
-The code uses simple unprocessed in-browser JavaScript.
-Dependencies, like the Web3Modal library itself,
-are loaded over Unpkg CDN. The code is extensively
-commented and short.
+## Getting Started
 
-* [View demo hosted on Github](https://web3modal.github.io/web3modal-vanilla-js-example/)
+### Requirements
+You will need node.js (12.* or later) and npm installed to run it locally. 
 
-![screenshot2](./screenshot2.png)
+1. Import the repository and `cd` into the new directory.
+2. Run `npm install`.
+3. Edit the **polkaConfig** variable in `js/polka.js` with the correct Smartcontract addresses:
+   - The Config is the Object of Key-value storage.
+   - Keys are the Chain IDs.
+   - Values are the list of Smartcontract addresses.
+   - Value `polka.address` is XP token address.
+   Add the Config for appropriate Chain ID that you wish to connect to.
+4. Edit the polkaSyncURL variable in `js/polka.js` with correct Polka Sync bot. 
+6. Finally Run the Server: `npm run start`.
+7. To visit Manager's website, visit: `https://localhost/manager.html`.
 
-![screenshot](./screenshot.png)
+## Troubleshooting
 
-# What should I do with this
-
-[Web3modal](https://github.com/web3modal/web3modal)) is a vendor-neutral project
-offering an easy integration of cryptocurrency and
-decentralised finance for websites. For example, you can use this to start
-accepting cryptocurrency payments on your site or to start
-building a decentralised finance application.
-
-# Support
-
-[Go to Web3modal main Github repository](https://github.com/web3modal/web3modal).
-
-Reach to us in [Web3modal Discord](https://discordapp.com/invite/YGnSX9y) or open a Github issue.
-
-# Web3 wallets and HTTPS hosting limitations
-
-Because of limitations how wallet operate within a web browser
-and web security,
-you should not run this example, or any Web3modal code,
-out of your file system or insecure HTTP protocol
-(even using localhost).
-
-The APIs of different wallet providers
-may fail in funny and obscure way.
-MetaMask does not even show up if you load it over `file://`
-protocol.
-
-The easiest way to get local HTTPS development
-is to use [https-localhost](https://github.com/daquinoaldo/https-localhost).
-
-Assuming you have a working Node environment set up on a UNIX
-system you can do:
-
-```sh
-npm i -g --only=prod https-localhost
-sudo serve .
-```
-
-... in the folder of index.html file.
-
-Then you can visit https://localhost to open the example.
-
-# Publishing example on Github
-
-To republish the example:
-
-```sh
-git push origin master:gh-pages
-```
-
-This will push `index.html` to https://web3modal.github.io/web3modal-vanilla-js-example/
-
+If you have any questions, send them along with a hi to hello@dandelionlabs.io.
