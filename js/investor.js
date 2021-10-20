@@ -129,6 +129,9 @@ async function onTransfer() {
     window.scape.methods.transferFrom(window.selectedAccount, to, window.scapeID)
         .send({from: window.selectedAccount})
         .on('transactionHash', function(hash) {
+            window.scapeID = undefined;
+            document.querySelector("#scape-id").textContent = 0;
+            
           document.querySelector("#toast-title").textContent = "Waiting...";
           document.querySelector(".toast-body").innerHTML = `See TX on
             <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
