@@ -13,20 +13,12 @@
     <!-- Construct a Bootstrap layout -->
     <div class="container">
       <!-- Top Menu -->
-      <div class="row bg-light" id="nav">
-        <div class="col-md-4" >
-          <a href="https://polkafantasy.com/" alt="Best Japanese NFT Marketplace and Metaverse Game" target="_blank"><img src="images/logo.svg" alt="PolkaFantasy - Japanese themed Marketplace and game" /></a>
-        </div>
-        <div class="col-md-4">
-          <h4 class="text-center font-weight-bold">
-            <strong>Investor's Page</strong>
-          </h4>
-        </div>
-        <div class="col-md-4">
-          <button class="btn btn-primary float-end" id="btn-connect">
+      <div class="row" id="nav">
+        <div class="col-md-12 text-center">
+          <button class="btn btn-primary" id="btn-connect">
             Connect Wallet
           </button>
-          <button class="btn btn-warning float-end" id="btn-disconnect" style="display: none;">
+          <button class="btn btn-warning text-center" id="btn-disconnect" style="display: none;">
             Disconnect Wallet
           </button>
         </div>
@@ -48,76 +40,37 @@
         </div>
       </div>
       <!-- Wallet connected: show balance -->
-      <div class="row mt-4 mb-4" id="connected" style="display: none;">
-        <div class="col-7" >
-          <strong>Blockchain:</strong> <span id="network-name"></span>
-        </div>
-        <div class="col-5 text-end">
-          <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-primary">
-              <strong>Account:</strong>
-              <span class="badge bg-primary rounded-pill" id="selected-account"></span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>ETH Balance:</strong>
-              <span class="badge bg-primary rounded-pill" id="eth-balance">0</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <strong>XP Balance:</strong>
-              <span class="badge bg-primary rounded-pill" id="xp-balance">0</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Investment info -->
-      <div class="row mt-5">
-        <div class="col-md-12">
-          <h1 class="h2"><span id="pool-info-name"></span> Pool Info:</h1>
-          <p class="text-danger" id="pool-info-danger">Please connect your wallet to see Pool Info!</p>
-        </div>
-        <div class="col-md-6">
-          <p><strong>Contract Address:</strong> <span id="pool-info-contract"><span class="text-muted">Connect wallet</span></span></p>
-        </div>
-        <div class="col-md-6">
-          <p><strong>Available Claimable:</strong> <span id="pool-info-accessible"><span class="text-muted">Connect wallet</span></span>
-        </div>
-      </div>
-      <div class="row mt-5">
-        <div class="col-md-12">
-          <h3>Vesting Progress:</h3>
-        </div>
-        <div class="col-md-12">
-          <div class="progress" style="height: 40px; padding: 3px;">
-            <div class="progress-bar" role="progressbar" style="width: 15%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" id="progress-claimed">Claimed</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" id="progress-claimable">Claimable</div>
-            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" id="progress-remaining">Remaining</div>
+      <div class="row mt-4 mb-4" id="connected">
+        <div class="col-md-12" >
+          <div class="list-group-item d-flex justify-content-between align-items-center list-group-item-primary">
+            <strong>Account:</strong>
+            <span class="badge bg-primary rounded-pill" id="selected-account"></span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>Blockchain:</strong>
+            <span class="badge bg-primary" id="network-name">undefined</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>NATIVE (ETH/BNB/MOVR):</strong>
+            <span class="badge bg-primary rounded-pill" id="eth-balance">0</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            <strong>Scape ID:</strong>
+            <span class="badge bg-primary rounded-pill" id="scape-id">0</span>
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col text-start">
-          <strong class="text-muted">Start:</strong><br>
-          <span id="pool-info-start-time"><span class="text-muted">Connect wallet</span></span>
-        </div>
-        <div class="col text-center">
-          <strong class="text-muted">Remained:</strong><br>
-          <span id="pool-info-remained-time"><span class="text-muted">Connect wallet</span></span>
-        </div>
-        <div class="col text-end">
-          <strong class="text-muted">End:</strong><br>
-          <span id="pool-info-end-time"><span class="text-muted">Connect wallet</span></span>
+      <!-- Transfer Scapes -->
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <button id="fetch-scape-id" class="btn btn-primary">Get the next Scape</button>
         </div>
       </div>
-
-      <div class="row mt-5 mb-5">
-        <div class="col-md-12 text-center">
-          <strong>Available Claimable/Locked (XP):</strong>
-          <span id="label-claimable">0.0</span> /
-          <span id="label-locked">0.0</span>
-        </div>
-        <div class="col-md-12 text-center mt-2">
-          <button type="button" class="btn btn-success" id="btn-claim">Claim</button>
+      <div class="row mt-5">
+        <div class="col-md-12">
+          Transfer Scape NFT to
+          <input id="scape-to" />
+          <button id="scape-transfer" class="btn btn-primary">Transfer</button>
         </div>
       </div>
     </div>
@@ -179,8 +132,7 @@
     <script type="text/javascript" src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
 
     <!-- This is our code -->
-    <script type="text/javascript" src="abi-js/Polka.js"></script>
-    <script type="text/javascript" src="abi-js/Vesting.js"></script>
+    <script type="text/javascript" src="abi-js/Scape.js"></script>
     <script type="text/javascript" src="js/polka.js"></script>
     <script type="text/javascript" src="js/investor.js"></script>
     <script type="module" src="wallet-connect.js"></script>

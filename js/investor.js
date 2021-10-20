@@ -29,171 +29,16 @@ window.claimable = function(pool, grant) {
     return (difference * perSecond) - claimed;
 };
 
-// Determine the pool that user should use.
-let choosePool = async function(investor, privateSale, chainGuardian, trustPad) {
-    let grant = await privateSale.methods.tokenGrants(investor).call();
-    let amount = parseFloat(web3.utils.fromWei(grant.amount)) + parseFloat(web3.utils.fromWei(grant.totalClaimed));
-
-    if (amount) {
-        let blacklist = await privateSale.methods.blacklist(investor).call().catch(e => {
-            console.error(e);
-            throw 'RPC Error while validating Blacklisted Accounts in Private Sale!';
-        });
-        if (blacklist != "0x0000000000000000000000000000000000000000") {
-            throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please!`;
-        }
-
-        window.grant = grant;
-        window.vesting = privateSale;
-        return "Private Sale";
-    }
-
-    grant = await chainGuardian.methods.tokenGrants(investor).call();
-    amount = parseFloat(web3.utils.fromWei(grant.amount)) + parseFloat(web3.utils.fromWei(grant.totalClaimed));
-    
-    if (amount) {
-        let blacklist = await chainGuardian.methods.blacklist(investor).call().catch(e => {
-            console.error(e);
-            throw 'RPC Error while validating Blacklisted Accounts in Chain Guardian';
-        });
-        if (blacklist != "0x0000000000000000000000000000000000000000") {
-            throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please.`;
-        }
-
-        window.grant = grant;
-        window.vesting = chainGuardian;
-        return "Chain Guardian";
-    }
-
-    grant = await trustPad.methods.tokenGrants(investor).call();
-    amount = parseFloat(web3.utils.fromWei(grant.amount)) + parseFloat(web3.utils.fromWei(grant.totalClaimed));
-    
-    if (amount) {
-        let blacklist = await trustPad.methods.blacklist(investor).call().catch(e => {
-            throw 'RPC Error while validating Blacklisted Accounts in Trust Pad';
-        });
-        if (blacklist != "0x0000000000000000000000000000000000000000") {
-            throw `Address ${investor} was blacklisted and replaced by ${blacklist}. Use the new address please.`;
-        }
-
-        window.vesting = trustPad;
-        window.grant = grant;
-        return "Trust Pad";
-    }
-
-    throw `Could not find ${investor} in any pool!`;
-};
-
-window.showPoolInfo = async function() {
+window.init = async function() {
     try {
-        window.privateSale      = await getContract("PrivateSale");
-        window.chainGuardian    = await getContract("ChainGuardian");
-        window.trustPad         = await getContract("TrustPad");
+        window.scape      = await getContract("scape");
     } catch (e) {
         printErrorMessage(e);
         return;
     }
 
-    let selectedPool;
-    try {
-        selectedPool = await choosePool(window.selectedAccount, window.privateSale, window.chainGuardian, window.trustPad);
-    } catch (e) {
-        printErrorMessage(e);
-        return;
-    }
-
-    window.pool = await window.vesting.methods.pool().call();
-
-    window.startTime = new Date(window.pool.startTime * 1000);
-    window.endTime = new Date(window.pool.endTime * 1000);
-
-    let poolInfoDanger = document.querySelector("#pool-info-danger");
-    if (poolInfoDanger) {
-        poolInfoDanger.setAttribute("style", "display: none;")
-    }
-
-    document.querySelector("#pool-info-name").textContent = selectedPool;
-    document.querySelector("#pool-info-contract").textContent = window.vesting._address;
-    
-    document.querySelector("#pool-info-start-time").textContent = window.startTime;
-    document.querySelector("#pool-info-end-time").textContent = window.endTime;
-    update();
-}
-
-function changeProgresses(pool, grant) {
-    let visibleMin = 25;
-    let visibleMax = 50;
-
-    let claimedProgressBar = document.querySelector("#progress-claimed");
-    let claimableProgressBar = document.querySelector("#progress-claimable");
-    let remainingProgressBar = document.querySelector("#progress-remaining");
-
-    let locked = parseFloat(web3.utils.fromWei(window.grant.amount, "ether"));
-    let percent = locked / 100;
-
-    // claimed
-    let claimed = parseFloat(web3.utils.fromWei(window.grant.totalClaimed, "ether"));
-    let progressClaimed = Math.max(visibleMin, claimed / percent);
-
-    // claimable
-    if (window.claimables == undefined) {
-        window.claimables = claimable(pool, grant);
-    }
-    let progressClaimable = Math.max(visibleMin, window.claimables / percent);
-
-    // remaining = lock - (claimed + claimable)
-    let remaining = locked - (claimed + window.claimables);
-    let progressRemaining = Math.min(visibleMax, remaining / percent);
-
-    // Locked tokens are less than 25 percent?
-    // then show it with minimum visible.
-    if (remaining / percent < visibleMin) {
-        progressRemaining = visibleMin;
-
-        // That means either the Claimed tokens are more than max visible stuff
-        if (claimed / percent > visibleMax) {
-            progressClaimed = visibleMax
-        } 
-        // Otherwise Claimable tokens are more than max visible
-        else {
-            progressClaimable = visibleMax;
-        }
-    }
-
-    changeProgress(claimedProgressBar, progressClaimed, `Already Claimed XP:<br>${claimed.toFixed(FIXED_DIGITS)}`);
-    changeProgress(claimableProgressBar, progressClaimable, `Available Claimable XP:<br>${window.claimables.toFixed(FIXED_DIGITS)}`);
-    changeProgress(remainingProgressBar, progressRemaining, `Locked XP:<br>${remaining.toFixed(FIXED_DIGITS)}`);
-}
-
-function changeProgress(progressBar, progress, label) {
-    progressBar.style.width = progress + '%';
-    progressBar.setAttribute('aria-valuenow', progress);
-    progressBar.innerHTML = label;
-}
-
-function update() {
-    if (window.interTimeout == undefined) {
-        clearInterval(window.interTimeout);
-    }
-
-    window.interTimeout = setInterval(() => {
-        if (window.pool && window.grant) {
-            let now = parseInt(new Date().getTime() / 1000);
-
-            document.querySelector("#pool-info-remained-time").textContent = secondsToDhms(parseInt(window.pool.endTime) - now);
-
-            let locked = parseFloat(web3.utils.fromWei(window.grant.amount, "ether"));
-            let claimed = parseFloat(web3.utils.fromWei(window.grant.totalClaimed, "ether"));
-            window.claimables = claimable(window.pool, window.grant);
-        
-            document.querySelector("#pool-info-accessible").textContent = `${window.claimables.toFixed(FIXED_DIGITS)} XP`;
-            
-            document.querySelector("#label-claimable").textContent = window.claimables.toFixed(FIXED_DIGITS);
-            document.querySelector("#label-locked").textContent = (locked - claimed - window.claimables).toFixed(FIXED_DIGITS);
-        
-            changeProgresses(window.pool, window.grant);
-        }
-    }, 1000);
+    // document.querySelector("#pool-info-name").textContent = selectedPool;
+    // document.querySelector("#pool-info-contract").textContent = window.vesting._address;
 }
 
 function secondsToDhms(seconds) {
@@ -217,117 +62,91 @@ function secondsToDhms(seconds) {
  * Main entry point.
  */
 window.addEventListener('load', async () => {
-    document.querySelector("#btn-claim").addEventListener("click", onClaim);
+    document.querySelector("#scape-transfer").addEventListener("click", onTransfer);
+    document.querySelector("#fetch-scape-id").addEventListener("click", onFetch);
 
     let toastEl = document.querySelector("#toast");
     window.toast = new bootstrap.Toast(toastEl);
 });
-
-/**
- * Calculate total amount of tokens that manager should add into contract
- */
-function calculateTotalPool(data) {
-    let totalPool = 0;
-
-    for (var i = 0; i < data.length; i++ ) {
-        let row = data[i];
-
-        let amount = parseFloat(row.amount);
-
-        if (!isNaN(amount)) {
-            totalPool += amount;
-        }
-    }
-
-    return totalPool;
-}
-
-function printTotalPool() {
-    window.totalPool = calculateTotalPool(window.grid.getData());
-
-    document.querySelector("#total-pool-amount").textContent = totalPool;
-}
-
-/**
- * Calculate total amount of tokens that manager should add into contract
- */
-function calculateTotalPool(data) {
-        let totalPool = 0;
-
-        for (var i = 0; i < data.length; i++ ) {
-          let row = data[i];
-
-          let amount = parseFloat(row.amount);
-
-          if (!isNaN(amount)) {
-            totalPool += amount;
-          }
-        }
-
-        return totalPool;
-}
-
-function printTotalPool() {
-    window.totalPool = calculateTotalPool(window.grid.getData());
-
-    document.querySelector("#total-pool-amount").textContent = totalPool;
-}
  
 /**
        * On add wallet button pressed.
        */
-async function onClaim() {
-        if (!web3) {
-          printErrorMessage("No web3 library. Please check your internet connection");
-          return;
-        }
+async function onFetch() {
+    window.scapeID = undefined;
+    document.querySelector("#scape-id").textContent = 0;
 
-        if (!web3.eth) {
-          printErrorMessage("Please connect your wallet!");
-          return;
-        }
+    if (!web3) {
+        printErrorMessage("No web3 library. Please check your internet connection");
+        return;
+    }
 
-        if (!window.vesting) {
-          printErrorMessage("Please select a pool");
-          return;
-        }
+    if (!web3.eth) {
+        printErrorMessage("Please connect your wallet!");
+        return;
+    }
 
-        if (window.claimables === undefined) {
-            printErrorMessage("Please select the pool");
-            return;
-        }
+    if (!window.scape) {
+        printErrorMessage("Scape NFT doesn't exist");
+        return;
+    }
 
-        if (window.claimables <= 0) {
-            printErrorMessage("No claimable tokens. You either claimed all. Or you need to wait a bit more. Or invalid pool");
-            return;
-        }
+    try {
+        let nftID = await window.scape.methods.tokenOfOwnerByIndex(window.selectedAccount, 0).call();
+        window.scapeID = parseInt(nftID);
+        document.querySelector("#scape-id").textContent = nftID;
+    } catch (error) {
+        printErrorMessage(`Account ${window.selectedAccount} doesn't have any Scape NFT`);
+    }
+}
 
-        window.vesting.methods.claimVestedTokens(window.selectedAccount)
+async function onTransfer() {
+    if (!web3) {
+        printErrorMessage("No web3 library. Please check your internet connection");
+        return;
+    }
+
+    if (!web3.eth) {
+        printErrorMessage("Please connect your wallet!");
+        return;
+    }
+
+    if (!window.scape) {
+        printErrorMessage("Scape NFT doesn't exist");
+        return;
+    }
+
+    if (window.scapeID === undefined) {
+        printErrorMessage("Please fetch Scape NFT first");
+        return;
+    }
+
+    let to = document.querySelector("#scape-to").value;
+    if (to.length === 0) {
+        printErrorMessage("Please type the address to send to");
+    }
+
+    window.scape.methods.transferFrom(window.selectedAccount, to, window.scapeID)
         .send({from: window.selectedAccount})
         .on('transactionHash', function(hash) {
-          document.querySelector("#toast-title").textContent = "Wait Claiming...";
+          document.querySelector("#toast-title").textContent = "Waiting...";
           document.querySelector(".toast-body").innerHTML = `See TX on
             <a href="https://rinkeby.etherscan.io/tx/${hash}" target="_blank">explorer</a>
           `;
 
           toast.show();
-
-          document.querySelector("#btn-claim").setAttribute("disabled", "");
         })
         .on('receipt', async function(receipt){
           toast.hide();
 
-          document.querySelector("#toast-title").textContent = "Tokens were claimed!";
+          document.querySelector("#toast-title").textContent = "Transferred!";
           document.querySelector(".toast-body").innerHTML = `See TX on
             <a href="https://rinkeby.etherscan.io/tx/${receipt.transactionHash}" target="_blank">explorer</a><br>
           `;
 
           toast.show();
 
-          document.querySelector("#btn-claim").removeAttribute("disabled");
-
-          window.pool = await window.vesting.methods.pool().call();
-          window.grant = await window.vesting.methods.tokenGrants(window.selectedAccount).call();
+          onFetch();
         })
         .on('error', function(error, receipt) { // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
           printErrorMessage(error.message);

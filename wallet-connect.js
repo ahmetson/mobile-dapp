@@ -101,7 +101,7 @@ async function fetchAccountData() {
   document.querySelector("#btn-disconnect").style.display = "block";
 
   // Showing pool also loads the tokens
-  await showPoolInfo();
+  await window.init();
   updateBalance();
 }
 
@@ -115,9 +115,9 @@ function updateBalance() {
       await window.showNativeToken();
     }
           
-    if (window.showPolkaToken) {
-      await window.showPolkaToken();
-    }
+    // if (window.showPolkaToken) {
+      // await window.showPolkaToken();
+    // }
   }, 1000);
 }
 
